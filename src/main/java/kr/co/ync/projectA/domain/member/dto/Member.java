@@ -9,10 +9,24 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Member {
+<<<<<<< HEAD
     private Long id;
     private String email;
     private String password;
     private String name;
     private String phone;
+=======
+
+    private Long id;
+
+    private String email;
+
+    private String password;
+
+    private String name;
+
+    private String phone;
+
+>>>>>>> 32b1cf3 (Inital commit: Spring Boot project setup)
     private MemberRole role;
 }

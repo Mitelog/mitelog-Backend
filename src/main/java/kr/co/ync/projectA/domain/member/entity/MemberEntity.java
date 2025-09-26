@@ -11,8 +11,13 @@ import kr.co.ync.projectA.global.common.entity.BaseTimeEntity;
 @AllArgsConstructor
 @Builder
 @Getter
+<<<<<<< HEAD
 public class MemberEntity extends BaseTimeEntity {
 
+=======
+@ToString
+public class MemberEntity extends BaseTimeEntity {
+>>>>>>> 32b1cf3 (Inital commit: Spring Boot project setup)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,5 +36,8 @@ public class MemberEntity extends BaseTimeEntity {
 
     @Enumerated(value = EnumType.STRING)
     private MemberRole role;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 32b1cf3 (Inital commit: Spring Boot project setup)
 }
