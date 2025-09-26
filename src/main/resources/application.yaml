@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/projecta
+    username: root
+    password: 1234
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+    properties:
+      hibernate:
+        format_sql: true
+
+    show-sql: true
+
+application:
+  jwt:
+    secretKey: ync.ac.kr.secret-key-1234567890!@#$
+    expiration: 900000 #15분
+    refreshExpiration: 86400000 #1일
