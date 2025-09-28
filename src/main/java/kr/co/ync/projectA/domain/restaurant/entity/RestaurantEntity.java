@@ -2,7 +2,6 @@ package kr.co.ync.projectA.domain.restaurant.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import kr.co.ync.projectA.domain.member.entity.MemberEntity;
 import kr.co.ync.projectA.global.common.entity.BaseTimeEntity;
 
