@@ -1,0 +1,11 @@
+package kr.co.ync.projectA.domain.member.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import kr.co.ync.projectA.domain.member.entity.MemberEntity;
+
+import java.util.Optional;
+
+public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
+    Optional<MemberEntity> findByEmail(String email);
+    boolean existsByEmail(String email); // 회원가입 시 중복 체크용
+}
