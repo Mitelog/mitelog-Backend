@@ -8,12 +8,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Restaurant {
-
     private Long id;
-
-    private Long ownerId;     // 등록한 회원 ID
-    private String ownerEmail; // 필요하다면 이메일 추가
-
+    private Long ownerId;
+    private String ownerEmail;
     private String name;
     private String address;
     private String area;

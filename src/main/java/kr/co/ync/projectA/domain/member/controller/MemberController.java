@@ -13,14 +13,12 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    // 회원가입
     @PostMapping("/register")
     public ResponseEntity<Member> register(@RequestBody Member member) {
         Member saved = memberService.register(member);
         return ResponseEntity.ok(saved);
     }
 
-    // 로그인
     @PostMapping("/login")
     public ResponseEntity<Member> login(@RequestParam String email,
                                         @RequestParam String password) {
@@ -28,7 +26,6 @@ public class MemberController {
         return ResponseEntity.ok(loggedIn);
     }
 
-    // 단건 조회
     @GetMapping("/{id}")
     public ResponseEntity<Member> getMember(@PathVariable Long id) {
         return memberService.getMember(id)

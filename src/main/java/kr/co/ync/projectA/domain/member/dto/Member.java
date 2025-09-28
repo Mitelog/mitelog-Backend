@@ -11,7 +11,7 @@ import lombok.Setter;
 public class Member {
     private Long id;
     private String email;
-    private String password; // 로그인/회원가입 입력에 필요
+    private String password;
     private String name;
     private String phone;
     private MemberRole role;

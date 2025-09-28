@@ -17,32 +17,27 @@ public class RestaurantController {
 
     private final RestaurantService restaurantService;
 
-    // 등록
     @PostMapping
     public ResponseEntity<Restaurant> register(@RequestBody Restaurant restaurant) {
         Restaurant saved = restaurantService.register(restaurant);
         return ResponseEntity.ok(saved);
     }
 
-    // 전체 조회
     @GetMapping
     public ResponseEntity<List<Restaurant>> getAll() {
         return ResponseEntity.ok(restaurantService.getAll());
     }
 
-    // 상세 조회
     @GetMapping("/{id}")
     public ResponseEntity<Restaurant> getById(@PathVariable Long id) {
         return ResponseEntity.ok(restaurantService.getById(id));
     }
 
-    // 지역별 검색
     @GetMapping("/area/{area}")
     public ResponseEntity<List<Restaurant>> getByArea(@PathVariable String area) {
         return ResponseEntity.ok(restaurantService.getByArea(area));
     }
 
-    // 카테고리별 검색 (페이징)
     @GetMapping("/category/{category}")
     public ResponseEntity<Page<Restaurant>> getByCategory(
             @PathVariable String category,
@@ -54,7 +49,6 @@ public class RestaurantController {
         );
     }
 
-    // 이름 검색
     @GetMapping("/search")
     public ResponseEntity<List<Restaurant>> searchByName(@RequestParam String keyword) {
         return ResponseEntity.ok(restaurantService.searchByName(keyword));

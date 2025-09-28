@@ -4,7 +4,9 @@ import kr.co.ync.projectA.domain.member.dto.Member;
 import kr.co.ync.projectA.domain.member.entity.MemberEntity;
 
 public class MemberMapper {
-    public static Member toDTO(MemberEntity entity){
+
+    public static Member toDTO(MemberEntity entity) {
+        if (entity == null) return null;
         return Member.builder()
                 .id(entity.getId())
                 .email(entity.getEmail())
@@ -15,7 +17,8 @@ public class MemberMapper {
                 .build();
     }
 
-    public static MemberEntity toEntity(Member member){
+    public static MemberEntity toEntity(Member member) {
+        if (member == null) return null;
         return MemberEntity.builder()
                 .id(member.getId())
                 .email(member.getEmail())

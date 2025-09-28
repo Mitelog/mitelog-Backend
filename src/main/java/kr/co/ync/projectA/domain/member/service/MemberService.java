@@ -15,7 +15,6 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    // 회원가입
     public Member register(Member dto) {
         if (memberRepository.existsByEmail(dto.getEmail())) {
             throw new IllegalArgumentException("이미 가입된 이메일입니다.");
@@ -25,7 +24,6 @@ public class MemberService {
         return MemberMapper.toDTO(saved);
     }
 
-    // 로그인
     public Member login(String email, String password) {
         MemberEntity member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
@@ -35,7 +33,6 @@ public class MemberService {
         return MemberMapper.toDTO(member);
     }
 
-    // 회원 조회
     public Optional<Member> getMember(Long id) {
         return memberRepository.findById(id).map(MemberMapper::toDTO);
     }

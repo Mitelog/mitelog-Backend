@@ -11,8 +11,8 @@ import kr.co.ync.projectA.global.common.entity.BaseTimeEntity;
 @AllArgsConstructor
 @Builder
 @Getter
-@ToString
 public class MemberEntity extends BaseTimeEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,4 +31,5 @@ public class MemberEntity extends BaseTimeEntity {
 
     @Enumerated(value = EnumType.STRING)
     private MemberRole role;
+
 }

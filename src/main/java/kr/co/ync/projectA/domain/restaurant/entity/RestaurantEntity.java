@@ -18,7 +18,6 @@ public class RestaurantEntity extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 식당 등록자 (Member FK)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private MemberEntity owner;
@@ -30,11 +29,13 @@ public class RestaurantEntity extends BaseTimeEntity {
     private String address;
 
     @Column(length = 255, nullable = false)
-    private String area;  // 나중에 AreaEntity로 분리 가능
+
+    private String area;
 
     @Column(length = 255, nullable = false)
-    private String phone; // unique 제거 고려
+    private String phone;
 
     @Column
-    private String image; // 단일 이미지 (추후 확장 가능)
+    private String image;
+
 }

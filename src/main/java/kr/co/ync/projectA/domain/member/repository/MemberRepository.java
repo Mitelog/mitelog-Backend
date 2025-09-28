@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
     Optional<MemberEntity> findByEmail(String email);
-    boolean existsByEmail(String email); // 회원가입 시 중복 체크용
+    boolean existsByEmail(String email);
 }
