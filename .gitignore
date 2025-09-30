@@ -36,4 +36,7 @@ out/
 ### VS Code ###
 .vscode/
 
-### Spring Boot sensitive configs ### src/main/resources/application.yml src/main/resources/application.properties .env
+### Spring Boot sensitive configs ###
+src/main/resources/application.yml 
+src/main/resources/application.properties 
+.env
