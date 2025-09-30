@@ -20,6 +20,7 @@ public class MemberEntity extends BaseTimeEntity {
     @Column(nullable = false, unique = true)
     private String email;
 
+    // 암호화된 비밀번호
     @Column(length = 255, nullable = false)
     private String password;
 
