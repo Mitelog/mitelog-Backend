@@ -51,20 +51,20 @@ public class RestaurantService {
         return RestaurantMapper.toDTO(entity);
     }
 
-    public List<Restaurant> getByArea(String area) {
-        return restaurantRepository.findByArea(area).stream()
-                .map(RestaurantMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-
-    public Page<Restaurant> getByCategory(String category, Pageable pageable) {
-        return restaurantRepository.findByCategory(category, pageable)
-                .map(RestaurantMapper::toDTO);
-    }
-
-    public List<Restaurant> searchByName(String keyword) {
-        return restaurantRepository.findByNameContaining(keyword).stream()
-                .map(RestaurantMapper::toDTO)
-                .collect(Collectors.toList());
-    }
+//    public List<Restaurant> getByArea(String area) {
+//        return restaurantRepository.findByArea(area).stream()
+//                .map(RestaurantMapper::toDTO)
+//                .collect(Collectors.toList());
+//    }
+//
+//    public Page<Restaurant> getByCategory(String category, Pageable pageable) {
+//        return restaurantRepository.findByCategory(category, pageable)
+//                .map(RestaurantMapper::toDTO);
+//    }
+//
+//    public List<Restaurant> searchByName(String keyword) {
+//        return restaurantRepository.findByNameContaining(keyword).stream()
+//                .map(RestaurantMapper::toDTO)
+//                .collect(Collectors.toList());
+//    }
 }
