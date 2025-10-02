@@ -33,24 +33,24 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantService.getById(id));
     }
 
-    @GetMapping("/area/{area}")
-    public ResponseEntity<List<Restaurant>> getByArea(@PathVariable String area) {
-        return ResponseEntity.ok(restaurantService.getByArea(area));
-    }
-
-    @GetMapping("/category/{category}")
-    public ResponseEntity<Page<Restaurant>> getByCategory(
-            @PathVariable String category,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        return ResponseEntity.ok(
-                restaurantService.getByCategory(category, PageRequest.of(page, size))
-        );
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<List<Restaurant>> searchByName(@RequestParam String keyword) {
-        return ResponseEntity.ok(restaurantService.searchByName(keyword));
-    }
+//    @GetMapping("/area/{area}")
+//    public ResponseEntity<List<Restaurant>> getByArea(@PathVariable String area) {
+//        return ResponseEntity.ok(restaurantService.getByArea(area));
+//    }
+//
+//    @GetMapping("/category/{category}")
+//    public ResponseEntity<Page<Restaurant>> getByCategory(
+//            @PathVariable String category,
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size
+//    ) {
+//        return ResponseEntity.ok(
+//                restaurantService.getByCategory(category, PageRequest.of(page, size))
+//        );
+//    }
+//
+//    @GetMapping("/search")
+//    public ResponseEntity<List<Restaurant>> searchByName(@RequestParam String keyword) {
+//        return ResponseEntity.ok(restaurantService.searchByName(keyword));
+//    }
 }
