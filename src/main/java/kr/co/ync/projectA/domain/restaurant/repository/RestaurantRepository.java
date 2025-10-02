@@ -9,10 +9,10 @@ import java.util.List;
 
 public interface RestaurantRepository extends JpaRepository<RestaurantEntity, Long> {
 
-    List<RestaurantEntity> findByArea(String area);
-
-    Page<RestaurantEntity> findByCategory(String category, Pageable pageable);
-
-    List<RestaurantEntity> findByNameContaining(String keyword);
+//    List<RestaurantEntity> findByArea(String area);
+//
+//    Page<RestaurantEntity> findByCategory(String category, Pageable pageable);
+//
+//    List<RestaurantEntity> findByNameContaining(String keyword);
 }
 
