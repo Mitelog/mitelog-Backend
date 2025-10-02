@@ -2,10 +2,6 @@ package kr.co.ync.projectA.domain.restaurant.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-<<<<<<< HEAD
-=======
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
->>>>>>> 32b1cf3 (Inital commit: Spring Boot project setup)
 import kr.co.ync.projectA.domain.member.entity.MemberEntity;
 import kr.co.ync.projectA.global.common.entity.BaseTimeEntity;
 
@@ -15,60 +11,39 @@ import kr.co.ync.projectA.global.common.entity.BaseTimeEntity;
 @AllArgsConstructor
 @Builder
 @Getter
-@ToString
-<<<<<<< HEAD
+@ToString(exclude = "owner")
 public class RestaurantEntity extends BaseTimeEntity {
 
-=======
-@EnableJpaAuditing
-public class RestaurantEntity extends BaseTimeEntity {
->>>>>>> 32b1cf3 (Inital commit: Spring Boot project setup)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 가게 주인 (Member와 N:1 관계)
     @ManyToOne(fetch = FetchType.LAZY)
-<<<<<<< HEAD
     @JoinColumn(name = "member_id", nullable = false)
     private MemberEntity owner;
-=======
-    @JoinColumn(name = "email", nullable = false)//fk
-    private MemberEntity email;
->>>>>>> 32b1cf3 (Inital commit: Spring Boot project setup)
 
+    // 가게 이름
     @Column(length = 255, nullable = false)
     private String name;
 
+    // 가게 주소
     @Column(length = 255, nullable = false)
     private String address;
 
-<<<<<<< HEAD
+    // 지역
     @Column(length = 255, nullable = false)
-
     private String area;
 
+    // 연락처
     @Column(length = 255, nullable = false)
     private String phone;
 
+    // 대표 이미지
     @Column
     private String image;
 
-=======
-    @Column(length = 255, nullable = false) //area 테이블 따로 만들게 되면 타입을 int로 변경
-    private String area;
-
+    // 사장 이메일
     @Column(length = 255, nullable = false, unique = true)
-    private String phone;
-
-    @Column(nullable = false)
-    private Boolean reserAvail;
-
-    @Column
-    private String image;
-
-    //이거 꼭 물어보기 OneToMany 왜 쓰는지
-//    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<RestaurantCategoryMapEntity> categoryMappings = new ArrayList<>();
-
->>>>>>> 32b1cf3 (Inital commit: Spring Boot project setup)
+    private String email;
 }

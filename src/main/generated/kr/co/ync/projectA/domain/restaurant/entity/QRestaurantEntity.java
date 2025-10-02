@@ -31,7 +31,7 @@ public class QRestaurantEntity extends EntityPathBase<RestaurantEntity> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createDateTime = _super.createDateTime;
 
-    public final kr.co.ync.projectA.domain.member.entity.QMemberEntity email;
+    public final StringPath email = createString("email");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -42,9 +42,9 @@ public class QRestaurantEntity extends EntityPathBase<RestaurantEntity> {
 
     public final StringPath name = createString("name");
 
-    public final StringPath phone = createString("phone");
+    public final kr.co.ync.projectA.domain.member.entity.QMemberEntity owner;
 
-    public final BooleanPath reserAvail = createBoolean("reserAvail");
+    public final StringPath phone = createString("phone");
 
     public QRestaurantEntity(String variable) {
         this(RestaurantEntity.class, forVariable(variable), INITS);
@@ -64,7 +64,7 @@ public class QRestaurantEntity extends EntityPathBase<RestaurantEntity> {
 
     public QRestaurantEntity(Class<? extends RestaurantEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.email = inits.isInitialized("email") ? new kr.co.ync.projectA.domain.member.entity.QMemberEntity(forProperty("email")) : null;
+        this.owner = inits.isInitialized("owner") ? new kr.co.ync.projectA.domain.member.entity.QMemberEntity(forProperty("owner")) : null;
     }
 
 }
