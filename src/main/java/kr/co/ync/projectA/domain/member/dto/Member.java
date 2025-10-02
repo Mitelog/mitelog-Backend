@@ -9,10 +9,16 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Member {
+
     private Long id;
+
     private String email;
+
     private String password;
+
     private String name;
+
     private String phone;
+
     private MemberRole role;
 }
