@@ -8,6 +8,7 @@ import kr.co.ync.projectA.global.security.handler.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,12 +36,11 @@ public class SecurityConfig {
                         authorize ->
                                 authorize
                                         .requestMatchers("/auth/**").permitAll()
-                                        //사실 이건 필요없슴 나중에 제거하셈 이유는 jwtAuthenticationFilter에서 토큰 검증하는거기 때문 authorizeHttpRequests는 사실 role기반임
-                                        .requestMatchers("/api/members/register").permitAll()
+                                        .requestMatchers(HttpMethod.POST, "/api/members/register").permitAll()
                                         .requestMatchers("/admin/**").hasAnyRole("ADMIN")
                                         .anyRequest()
                                         .authenticated()
-                )
+                )ㄴ
                 .exceptionHandling(
                         handlingconfigurer ->
                                 handlingconfigurer
