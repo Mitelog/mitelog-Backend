@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "http://3.36.91.73")
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
