@@ -24,6 +24,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws
             ServletException, IOException {
+
+        String path = request.getRequestURI();
+        //예외 경로는 검사안하고 바로 return
+        if (path.startsWith("/auth") || path.equals("/api/members/register")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String token = null;
         String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
         if(

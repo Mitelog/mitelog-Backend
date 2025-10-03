@@ -35,6 +35,7 @@ public class SecurityConfig {
                         authorize ->
                                 authorize
                                         .requestMatchers("/auth/**").permitAll()
+                                        //사실 이건 필요없슴 나중에 제거하셈 이유는 jwtAuthenticationFilter에서 토큰 검증하는거기 때문 authorizeHttpRequests는 사실 role기반임
                                         .requestMatchers("/api/members/register").permitAll()
                                         .requestMatchers("/admin/**").hasAnyRole("ADMIN")
                                         .anyRequest()
