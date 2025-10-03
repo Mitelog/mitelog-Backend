@@ -35,6 +35,7 @@ public class SecurityConfig {
                         authorize ->
                                 authorize
                                         .requestMatchers("/auth/**").permitAll()
+                                        .requestMatchers("/api/members/register").permitAll()
                                         .requestMatchers("/admin/**").hasAnyRole("ADMIN")
                                         .anyRequest()
                                         .authenticated()
