@@ -19,6 +19,7 @@ public class MemberController {
         return ResponseEntity.ok(saved);
     }
 
+    //jwt기반으로 대체될 예정
     @PostMapping("/login")
     public ResponseEntity<Member> login(@RequestParam String email,
                                         @RequestParam String password) {
