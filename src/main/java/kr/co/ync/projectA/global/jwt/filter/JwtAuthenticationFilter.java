@@ -26,6 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             ServletException, IOException {
 
         String path = request.getRequestURI();
+        System.out.println("요청 URI = " + path);
         //예외 경로는 검사안하고 바로 return
         if (path.startsWith("/auth") || path.startsWith("/api/members/register")) {
             filterChain.doFilter(request, response);
