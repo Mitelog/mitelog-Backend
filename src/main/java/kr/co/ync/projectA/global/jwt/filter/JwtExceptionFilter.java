@@ -22,7 +22,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         //전처리
         String path = request.getRequestURI();
 
-        if (path.startsWith("/auth") || path.equals("/api/members/register")) {
+        if (path.startsWith("/auth") || path.startsWith("/api/members/register")) {
             filterChain.doFilter(request, response);
             return;
         }
