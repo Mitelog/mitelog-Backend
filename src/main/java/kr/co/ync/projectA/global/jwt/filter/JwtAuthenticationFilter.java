@@ -24,7 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        System.out.println("🔍 request path = " + request.getRequestURI());
+        System.out.println("🧩 JwtAuthenticationFilter INIT - Path: " + request.getRequestURI());
         String path = request.getRequestURI();
 
         // ✅ 인증 없이 통과할 경로 (화이트리스트)
