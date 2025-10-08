@@ -20,6 +20,11 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //전처리
+        if (path.startsWith("/auth") || path.equals("/api/members/register")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try{
             filterChain.doFilter(request, response);
         } catch (JwtException e){
