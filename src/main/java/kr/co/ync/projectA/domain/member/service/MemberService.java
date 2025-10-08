@@ -18,6 +18,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     public Member register(Member dto) {
+        System.out.println("📩 Register Request DTO: " + dto);
         if (memberRepository.existsByEmail(dto.getEmail())) {
             throw new IllegalArgumentException("이미 가입된 이메일입니다.");
         }
