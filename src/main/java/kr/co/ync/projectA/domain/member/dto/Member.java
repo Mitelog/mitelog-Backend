@@ -2,13 +2,13 @@ package kr.co.ync.projectA.domain.member.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import kr.co.ync.projectA.domain.member.entity.enums.MemberRole;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Builder
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Member {
 
     private Long id;
