@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@SpringBootApplication(scanBasePackages = "kr.co.ync.projectA",  exclude = { SecurityAutoConfiguration.class })
+@SpringBootApplication
 @EnableJpaAuditing
 public class ProjectAApplication {
 
