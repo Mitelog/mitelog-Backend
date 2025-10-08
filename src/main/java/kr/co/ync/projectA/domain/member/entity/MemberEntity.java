@@ -30,6 +30,8 @@ public class MemberEntity extends BaseTimeEntity {
     @Column(length = 255, nullable = false, unique = true)
     private String phone;
 
-    @Enumerated(value = EnumType.STRING)
-    private MemberRole role;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private MemberRole role = MemberRole.USER;
 }
