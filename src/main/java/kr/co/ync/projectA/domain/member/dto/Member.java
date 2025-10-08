@@ -16,7 +16,7 @@ public class Member {
     @JsonProperty("email")
     private String email;
 
-    @JsonProperty("password")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @JsonProperty("name")
@@ -25,5 +25,6 @@ public class Member {
     @JsonProperty("phone")
     private String phone;
 
-    private MemberRole role;
+    @Builder.Default
+    private MemberRole role = MemberRole.USER;
 }
