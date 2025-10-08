@@ -1,5 +1,6 @@
 package kr.co.ync.projectA.domain.member.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import kr.co.ync.projectA.domain.member.entity.enums.MemberRole;
 import lombok.*;
 
@@ -12,12 +13,16 @@ public class Member {
 
     private Long id;
 
+    @JsonProperty("email")
     private String email;
 
+    @JsonProperty("password")
     private String password;
 
+    @JsonProperty("name")
     private String name;
 
+    @JsonProperty("phone")
     private String phone;
 
     private MemberRole role;
