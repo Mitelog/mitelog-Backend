@@ -28,7 +28,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         // ✅ 인증 없이 통과할 경로 (화이트리스트)
-        if (path.startsWith("/auth") || path.startsWith("/api/members/register")) {
+        if (path.startsWith("/auth")
+                || path.equals("/api/members/register")
+                || path.equals("/api/members/register/")) {
+            System.out.println("✅ Whitelisted path: " + path);
             filterChain.doFilter(request, response);
             return;
         }
