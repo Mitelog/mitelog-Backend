@@ -21,7 +21,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         //전처리
         String path = request.getRequestURI();
-        
+
         if (path.startsWith("/auth") || path.equals("/api/members/register")) {
             filterChain.doFilter(request, response);
             return;
