@@ -40,7 +40,7 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_KEY }}
         source: "backend-app.tar.gz"
-        target: "~/"
+        target: "/home/ubuntu/"
 
     # 7️⃣ EC2에서 배포 + 자동 정리
     - name: Deploy and Cleanup on EC2
