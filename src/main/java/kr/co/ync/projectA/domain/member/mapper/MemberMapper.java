@@ -1,28 +1,29 @@
 package kr.co.ync.projectA.domain.member.mapper;
 
-import kr.co.ync.projectA.domain.member.dto.Member;
+import kr.co.ync.projectA.domain.member.dto.request.MemberRegisterRequest;
+import kr.co.ync.projectA.domain.member.dto.response.MemberResponse;
 import kr.co.ync.projectA.domain.member.entity.MemberEntity;
 
 public class MemberMapper {
-    public static Member toDTO(MemberEntity entity){
-        return Member.builder()
-                .id(entity.getId())
-                .email(entity.getEmail())
-                .password(entity.getPassword())
-                .name(entity.getName())
-                .phone(entity.getPhone())
-                .role(entity.getRole())
+
+    // 🔹 1) 회원가입 요청 DTO → Entity
+    public static MemberEntity toEntity(MemberRegisterRequest req, String encodedPassword) {
+        return MemberEntity.builder()
+                .email(req.getEmail())
+                .password(encodedPassword)
+                .name(req.getName())
+                .phone(req.getPhone())
                 .build();
     }
 
-    public static MemberEntity toEntity(Member member){
-        return MemberEntity.builder()
-                .id(member.getId())
-                .email(member.getEmail())
-                .password(member.getPassword())
-                .name(member.getName())
-                .phone(member.getPhone())
-                .role(member.getRole())
+    // 🔹 2) Entity → 응답 DTO
+    public static MemberResponse toResponse(MemberEntity e) {
+        return MemberResponse.builder()
+                .id(e.getId())
+                .email(e.getEmail())
+                .name(e.getName())
+                .phone(e.getPhone())
+                .role(e.getRole())
                 .build();
     }
 }
