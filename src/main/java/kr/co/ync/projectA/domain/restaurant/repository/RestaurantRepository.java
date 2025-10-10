@@ -20,12 +20,22 @@ public interface RestaurantRepository extends JpaRepository<RestaurantEntity, Lo
     List<RestaurantEntity> findByNameContaining(String keyword);
 
     // 카테고리별 조회 (카테고리 조인)
-    @Query("""
-        SELECT r FROM RestaurantEntity r
-        JOIN r.restaurantCategoryMaps m
-        JOIN m.category c
-        WHERE c.name = :categoryName
-    """)
+    @Query(
+            value = """
+            select distinct r
+            from RestaurantEntity r
+            join r.categoryMappings m
+            join m.category c
+            where c.name = :categoryName
+        """,
+            countQuery = """
+            select count(distinct r)
+            from RestaurantEntity r
+            join r.categoryMappings m
+            join m.category c
+            where c.name = :categoryName
+        """
+    )
     Page<RestaurantEntity> findByCategoryName(@Param("categoryName") String categoryName, Pageable pageable);
 }
 

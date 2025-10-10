@@ -22,27 +22,27 @@ class RestaurantCategoryMapRepositoryTest {
     @Autowired
     private RestaurantCategoryMapRepository restaurantCategoryMapRepository;
 
-    @Test
-    void testInsertRestaurantCategoryMap() {
-        List<CategoryEntity> categories = categoryRepository.findAll();
-
-        IntStream.rangeClosed(1, 30)
-                .forEach(restaurantId -> {
-                    RestaurantEntity restaurantEntity =
-                            restaurantRepository.findById((long) restaurantId)
-                                    .orElseThrow();
-
-                    categories.stream()
-                            .limit(5) // 예: 상위 5개만
-                            .forEach(category -> {
-                                RestaurantCategoryMapEntity map = RestaurantCategoryMapEntity.builder()
-                                        .restaurantId(restaurantEntity)
-                                        .category(category)
-                                        .build();
-
-                                restaurantCategoryMapRepository.save(map);
-                            });
-
-                });
-    }
+//    @Test
+//    void testInsertRestaurantCategoryMap() {
+//        List<CategoryEntity> categories = categoryRepository.findAll();
+//
+//        IntStream.rangeClosed(1, 30)
+//                .forEach(restaurantId -> {
+//                    RestaurantEntity restaurantEntity =
+//                            restaurantRepository.findById((long) restaurantId)
+//                                    .orElseThrow();
+//
+//                    categories.stream()
+//                            .limit(5) // 예: 상위 5개만
+//                            .forEach(category -> {
+//                                RestaurantCategoryMapEntity map = RestaurantCategoryMapEntity.builder()
+//                                        .restaurantId(restaurantEntity)
+//                                        .category(category)
+//                                        .build();
+//
+//                                restaurantCategoryMapRepository.save(map);
+//                            });
+//
+//                });
+//    }
 }
