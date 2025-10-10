@@ -30,16 +30,6 @@ public class MemberService {
         return MemberMapper.toDTO(saved);
     }
 
-    //jwt기반으로 대체될 예정
-    public Member login(String email, String password) {
-        MemberEntity member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
-        if (!member.getPassword().equals(password)) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        }
-        return MemberMapper.toDTO(member);
-    }
-
     public Optional<Member> getMember(Long id) {
         return memberRepository.findById(id).map(MemberMapper::toDTO);
     }
