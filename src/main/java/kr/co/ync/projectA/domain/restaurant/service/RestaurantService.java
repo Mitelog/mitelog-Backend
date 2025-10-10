@@ -65,6 +65,25 @@ public class RestaurantService {
     }
 
     /**
+     * 식당 수정
+     */
+    public Restaurant update(Long id, Restaurant updated) {
+        RestaurantEntity entity = restaurantRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("식당을 찾을 수 없습니다."));
+
+        entity.update(
+                updated.getName(),
+                updated.getAddress(),
+                updated.getArea(),
+                updated.getPhone(),
+                updated.getImage()
+        );
+
+        RestaurantEntity saved = restaurantRepository.save(entity);
+        return RestaurantMapper.toDTO(saved);
+    }
+
+    /**
      * 지역별 조회
      */
     public List<Restaurant> getByArea(String area) {
