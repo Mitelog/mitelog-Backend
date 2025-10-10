@@ -19,7 +19,7 @@ public class RestaurantCategoryMapEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
-    private RestaurantEntity restaurantId;
+    private RestaurantEntity restaurant;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)

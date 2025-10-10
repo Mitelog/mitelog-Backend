@@ -11,6 +11,7 @@ import kr.co.ync.projectA.global.common.entity.BaseTimeEntity;
 @AllArgsConstructor
 @Builder
 @Getter
+@Setter
 @ToString(exclude = "owner")
 public class RestaurantEntity extends BaseTimeEntity {
 
@@ -43,7 +44,7 @@ public class RestaurantEntity extends BaseTimeEntity {
     @Column
     private String image;
 
-    // 사장 이메일
-    @Column(length = 255, nullable = false, unique = true)
-    private String email;
+    // 사장 이메일 -> MemberEntity에서 가져오는걸로 변경
+//    @Column(length = 255, nullable = false, unique = true)
+//    private String email;
 }
