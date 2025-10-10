@@ -4,6 +4,8 @@ import kr.co.ync.projectA.domain.restaurant.entity.RestaurantEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,9 +13,19 @@ import java.util.List;
 @Repository
 public interface RestaurantRepository extends JpaRepository<RestaurantEntity, Long> {
 
+    // 지역별 조회
     List<RestaurantEntity> findByArea(String area);
 
-    Page<RestaurantEntity> findByCategoryName(String categoryName, Pageable pageable);
-
+    // 이름 검색
     List<RestaurantEntity> findByNameContaining(String keyword);
+
+    // 카테고리별 조회 (카테고리 조인)
+    @Query("""
+        SELECT r FROM RestaurantEntity r
+        JOIN r.restaurantCategoryMaps m
+        JOIN m.category c
+        WHERE c.name = :categoryName
+    """)
+    Page<RestaurantEntity> findByCategoryName(@Param("categoryName") String categoryName, Pageable pageable);
 }
+
