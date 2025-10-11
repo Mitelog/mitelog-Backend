@@ -1,16 +1,13 @@
-package kr.co.ync.projectA.domain.restaurant.dto;
+package kr.co.ync.projectA.domain.restaurant.dto.request;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Builder
 @Getter
 @Setter
-public class Restaurant {
-    private Long id;
-    private Long ownerId;
-    private String ownerEmail;
+@NoArgsConstructor
+public class RestaurantRequest {
     private String name;
     private String address;
     private String area;

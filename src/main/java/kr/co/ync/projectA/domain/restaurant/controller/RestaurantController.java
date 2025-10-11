@@ -1,6 +1,5 @@
 package kr.co.ync.projectA.domain.restaurant.controller;
 
-import kr.co.ync.projectA.domain.restaurant.dto.Restaurant;
 import kr.co.ync.projectA.domain.restaurant.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

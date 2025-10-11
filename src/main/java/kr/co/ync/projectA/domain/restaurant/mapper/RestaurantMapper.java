@@ -1,13 +1,25 @@
 package kr.co.ync.projectA.domain.restaurant.mapper;
 
-import kr.co.ync.projectA.domain.restaurant.dto.Restaurant;
+import kr.co.ync.projectA.domain.member.entity.MemberEntity;
+import kr.co.ync.projectA.domain.restaurant.dto.request.RestaurantRequest;
+import kr.co.ync.projectA.domain.restaurant.dto.response.RestaurantResponse;
 import kr.co.ync.projectA.domain.restaurant.entity.RestaurantEntity;
 
 public class RestaurantMapper {
 
-    public static Restaurant toDTO(RestaurantEntity entity) {
-        if (entity == null) return null;
-        return Restaurant.builder()
+    public static RestaurantEntity toEntity(RestaurantRequest dto, MemberEntity owner) {
+        return RestaurantEntity.builder()
+                .owner(owner)
+                .name(dto.getName())
+                .address(dto.getAddress())
+                .area(dto.getArea())
+                .phone(dto.getPhone())
+                .image(dto.getImage())
+                .build();
+    }
+
+    public static RestaurantResponse toResponse(RestaurantEntity entity) {
+        return RestaurantResponse.builder()
                 .id(entity.getId())
                 .ownerId(entity.getOwner().getId())
                 .ownerEmail(entity.getOwner().getEmail())
@@ -16,18 +28,6 @@ public class RestaurantMapper {
                 .area(entity.getArea())
                 .phone(entity.getPhone())
                 .image(entity.getImage())
-                .build();
-    }
-
-    public static RestaurantEntity toEntity(Restaurant dto) {
-        if (dto == null) return null;
-        return RestaurantEntity.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .address(dto.getAddress())
-                .area(dto.getArea())
-                .phone(dto.getPhone())
-                .image(dto.getImage())
                 .build();
     }
 }
