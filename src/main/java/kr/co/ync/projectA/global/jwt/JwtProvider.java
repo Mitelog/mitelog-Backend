@@ -53,7 +53,11 @@ public class JwtProvider {
             throw new JwtException("JWT String is Empty", e);
         } catch (WeakKeyException e) { // 서명 키가 너무 약함
             throw new JwtException("Weak Key used for signing JWT", e);
+        } catch (JwtException e) {
+            System.out.println("❌ JWT 파싱 실패: " + e.getMessage());
+            throw e;
         }
+
     }
 
     /**
