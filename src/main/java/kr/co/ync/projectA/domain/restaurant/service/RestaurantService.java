@@ -1,6 +1,5 @@
 package kr.co.ync.projectA.domain.restaurant.service;
 
-import kr.co.ync.projectA.domain.restaurant.dto.Restaurant;
 import kr.co.ync.projectA.domain.restaurant.entity.RestaurantEntity;
 import kr.co.ync.projectA.domain.restaurant.mapper.RestaurantMapper;
 import kr.co.ync.projectA.domain.restaurant.repository.RestaurantRepository;
