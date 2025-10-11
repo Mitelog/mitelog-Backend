@@ -42,10 +42,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // ✅ cors 등록
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/api/members/register").permitAll()
-                        .requestMatchers("/api/mypage/**").authenticated()
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests(authorize ->
+                        authorize
+                                .requestMatchers("/auth/**", "api/members/register").permitAll()
+                                .requestMatchers("/api/mypage/**").authenticated()
+                                .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint())
