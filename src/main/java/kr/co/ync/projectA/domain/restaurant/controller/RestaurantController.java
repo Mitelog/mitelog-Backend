@@ -20,7 +20,7 @@ public class RestaurantController {
     private final RestaurantService restaurantService;
 
     /** 등록 */
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("permitAll()")
     @PostMapping
     public ResponseEntity<RestaurantResponse> register(@RequestBody RestaurantRequest request) {
         return ResponseEntity.ok(restaurantService.register(request));
