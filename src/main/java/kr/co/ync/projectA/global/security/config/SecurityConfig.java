@@ -39,6 +39,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers("/auth/**", "api/members/register").permitAll()
+                                .requestMatchers("/api/mypage/**").authenticated()
                                 .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception ->
