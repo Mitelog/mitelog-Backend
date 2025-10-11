@@ -40,4 +40,8 @@ public class ReviewEntity extends BaseTimeEntity {
 
     @Column(nullable = false)
     private Long likeNum = 0L; //디폴트 값 이렇게 주는게 맞는지 물어보기
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private MemberEntity member;
 }
