@@ -17,11 +17,14 @@ public class BookmarkEntitny {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // ✅ 식당 (ManyToOne)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
-    private RestaurantEntity restaurantId;
+    private RestaurantEntity restaurant;
 
+    // ✅ 회원 (ManyToOne)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "email", nullable = false)//fk
-    private MemberEntity email;
+    @JoinColumn(name = "member_id", nullable = false)
+    private MemberEntity member;
+
 }

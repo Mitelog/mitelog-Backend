@@ -64,6 +64,8 @@ public class JwtProvider {
     public String generateAccessToken(String email) {
         return Jwts.builder()
                 .header() // header에 커스텀 타입 추가 (ACCESS/REFRESH 구분용)
+                .add("typ", "JWT")                // 표준 헤더 유지
+                .add("token_type", JwtType.ACCESS) // 커스텀 타입 추가
                 .add(Header.JWT_TYPE, JwtType.ACCESS)
                 .and()
                 .subject(email) // sub
