@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize ->
                         authorize
-                                .requestMatchers("/auth/**", "api/members/register").permitAll()
+                                .requestMatchers("/auth/**", "/api/members/register").permitAll()
                                 .requestMatchers("/api/mypage/**").authenticated()
                                 .anyRequest().authenticated()
                 )
@@ -64,7 +64,10 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:5173",
-                "http://3.36.91.73:5173"
+                "http://3.36.91.73",
+                "http://3.36.91.73:80",
+                "http://52.78.21.91",
+                "http://52.78.21.91:8080"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
