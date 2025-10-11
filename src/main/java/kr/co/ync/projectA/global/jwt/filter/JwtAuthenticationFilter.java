@@ -48,9 +48,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         if (token != null) {
-            Authentication authentication = jwtProvider.getAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            // ✅ 1. 토큰 유효성 먼저 검증
+            if (jwtProvider.validateToken(token)) {
+                Authentication authentication = jwtProvider.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                log.info("✅ JWT 인증 성공: {}", authentication.getName());
+            } else {
+                log.warn("❌ 유효하지 않은 JWT 토큰 - 인증 객체를 설정하지 않음");
+            }
         }
+
 
         filterChain.doFilter(request, response);
     }

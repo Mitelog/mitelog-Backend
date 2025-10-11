@@ -142,6 +142,25 @@ public class JwtProvider {
         );
     }
 
+    /**
+     * 📌 JWT 유효성 검증
+     *  - 토큰이 만료되었거나 서명이 올바르지 않으면 false 반환
+     *  - 유효할 경우 true 반환
+     */
+    public boolean validateToken(String token) {
+        try {
+            getClaims(token); // 내부적으로 Jwts.parser()를 실행해 서명과 만료 여부 검증
+            return true;
+        } catch (JwtException e) {
+            System.out.println("❌ JWT 검증 실패: " + e.getMessage());
+            return false;
+        } catch (IllegalArgumentException e) {
+            System.out.println("❌ 잘못된 JWT 토큰 형식: " + e.getMessage());
+            return false;
+        }
+    }
+
+
     // (선택) 토큰에서 이메일만 뽑고 싶을 때 간단 유틸
     @Nullable
     public String extractEmailOrNull(String token) {
