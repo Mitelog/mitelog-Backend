@@ -1,5 +1,7 @@
 package kr.co.ync.projectA.domain.restaurant.controller;
 
+import kr.co.ync.projectA.domain.restaurant.dto.request.RestaurantRequest;
+import kr.co.ync.projectA.domain.restaurant.dto.response.RestaurantResponse;
 import kr.co.ync.projectA.domain.restaurant.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,13 +22,13 @@ public class RestaurantController {
     /** 등록 */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<Restaurant> register(@RequestBody Restaurant restaurant) {
-        return ResponseEntity.ok(restaurantService.register(restaurant));
+    public ResponseEntity<RestaurantResponse> register(@RequestBody RestaurantRequest request) {
+        return ResponseEntity.ok(restaurantService.register(request));
     }
 
-    /** 전체 조회 (페이징) */
+    /** 전체 조회 */
     @GetMapping
-    public ResponseEntity<Page<Restaurant>> getAll(
+    public ResponseEntity<Page<RestaurantResponse>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
@@ -35,14 +37,17 @@ public class RestaurantController {
 
     /** 상세 조회 */
     @GetMapping("/{id}")
-    public ResponseEntity<Restaurant> getById(@PathVariable Long id) {
+    public ResponseEntity<RestaurantResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(restaurantService.getById(id));
     }
 
     /** 수정 */
     @PutMapping("/{id}")
-    public ResponseEntity<Restaurant> update(@PathVariable Long id, @RequestBody Restaurant updated) {
-        return ResponseEntity.ok(restaurantService.update(id, updated));
+    public ResponseEntity<RestaurantResponse> update(
+            @PathVariable Long id,
+            @RequestBody RestaurantRequest request
+    ) {
+        return ResponseEntity.ok(restaurantService.update(id, request));
     }
 
     /** 삭제 */
@@ -54,19 +59,19 @@ public class RestaurantController {
 
     /** 지역별 조회 */
     @GetMapping("/area/{area}")
-    public ResponseEntity<List<Restaurant>> getByArea(@PathVariable String area) {
+    public ResponseEntity<List<RestaurantResponse>> getByArea(@PathVariable String area) {
         return ResponseEntity.ok(restaurantService.getByArea(area));
     }
 
     /** 이름 검색 */
     @GetMapping("/search")
-    public ResponseEntity<List<Restaurant>> searchByName(@RequestParam String keyword) {
+    public ResponseEntity<List<RestaurantResponse>> searchByName(@RequestParam String keyword) {
         return ResponseEntity.ok(restaurantService.searchByName(keyword));
     }
 
     /** 카테고리별 조회 */
     @GetMapping("/category/{category}")
-    public ResponseEntity<Page<Restaurant>> getByCategory(
+    public ResponseEntity<Page<RestaurantResponse>> getByCategory(
             @PathVariable String category,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
