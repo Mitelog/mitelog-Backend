@@ -1,5 +1,6 @@
 package kr.co.ync.projectA.domain.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import kr.co.ync.projectA.domain.member.entity.enums.MemberRole;
@@ -12,6 +13,7 @@ import kr.co.ync.projectA.global.common.entity.BaseTimeEntity;
 @Builder
 @Getter
 @ToString
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class MemberEntity extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

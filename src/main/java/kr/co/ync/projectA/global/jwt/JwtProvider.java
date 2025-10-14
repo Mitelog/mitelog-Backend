@@ -174,4 +174,53 @@ public class JwtProvider {
             return null;
         }
     }
+
+    /**
+     * 📌 Authorization 헤더에서 회원 ID를 추출
+     *  - "Bearer " 접두사 제거 후 실제 토큰 파싱
+     *  - 토큰에서 이메일(subject) 꺼내고 DB에서 memberId 반환
+     */
+    public Long getMemberIdFromToken(String token) {
+        if (token == null || !token.startsWith("Bearer ")) {
+            throw new JwtException("Invalid Authorization header");
+        }
+        String pureToken = token.substring(7); // "Bearer " 제거
+        String email = extractEmailOrNull(pureToken);
+        if (email == null) {
+            throw new JwtException("Invalid token or cannot extract email");
+        }
+
+        MemberEntity member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> MemberNotFoundException.EXCEPTION);
+
+        return member.getId();
+    }
+
+    /**
+     * 📌 JWT 토큰으로부터 회원 ID를 추출
+     *  - Authorization 헤더 형식 ("Bearer ") 포함 시 자동 제거
+     *  - subject(email)을 꺼내서 DB 조회 후 memberId 반환
+     */
+    public Long getUserIdFromToken(String token) {
+        if (token == null || token.isBlank()) {
+            throw new JwtException("Token is null or empty");
+        }
+
+        // "Bearer " 접두사 제거 (있을 경우)
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+
+        String email = extractEmailOrNull(token);
+        if (email == null) {
+            throw new JwtException("Invalid token: cannot extract email");
+        }
+
+        MemberEntity member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> MemberNotFoundException.EXCEPTION);
+
+        return member.getId();
+    }
+
+
 }

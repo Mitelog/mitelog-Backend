@@ -26,7 +26,7 @@ public class QRestaurantCategoryMapEntity extends EntityPathBase<RestaurantCateg
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity restaurantId;
+    public final kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity restaurant;
 
     public QRestaurantCategoryMapEntity(String variable) {
         this(RestaurantCategoryMapEntity.class, forVariable(variable), INITS);
@@ -47,7 +47,7 @@ public class QRestaurantCategoryMapEntity extends EntityPathBase<RestaurantCateg
     public QRestaurantCategoryMapEntity(Class<? extends RestaurantCategoryMapEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.category = inits.isInitialized("category") ? new kr.co.ync.projectA.domain.category.entity.QCategoryEntity(forProperty("category")) : null;
-        this.restaurantId = inits.isInitialized("restaurantId") ? new kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity(forProperty("restaurantId"), inits.get("restaurantId")) : null;
+        this.restaurant = inits.isInitialized("restaurant") ? new kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity(forProperty("restaurant"), inits.get("restaurant")) : null;
     }
 
 }
