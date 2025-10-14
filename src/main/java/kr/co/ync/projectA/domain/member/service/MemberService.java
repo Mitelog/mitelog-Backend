@@ -1,11 +1,14 @@
 package kr.co.ync.projectA.domain.member.service;
 
+import kr.co.ync.projectA.domain.follow.reposiroty.FollowRepository;
 import kr.co.ync.projectA.domain.member.dto.request.MemberLoginRequest;
 import kr.co.ync.projectA.domain.member.dto.request.MemberRegisterRequest;
+import kr.co.ync.projectA.domain.member.dto.response.MemberPublicResponse;
 import kr.co.ync.projectA.domain.member.dto.response.MemberResponse;
 import kr.co.ync.projectA.domain.member.entity.MemberEntity;
 import kr.co.ync.projectA.domain.member.mapper.MemberMapper;
 import kr.co.ync.projectA.domain.member.repository.MemberRepository;
+import kr.co.ync.projectA.domain.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,9 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+
+    private final ReviewRepository reviewRepository;
+    private final FollowRepository followRepository;
 
     /**
      * ✅ 회원가입
@@ -70,4 +76,16 @@ public class MemberService {
         return memberRepository.findById(id)
                 .map(MemberMapper::toResponse);
     }
+
+    public MemberPublicResponse getPublicProfile(Long id) {
+        MemberEntity member = memberRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("회원이 존재하지 않습니다."));
+
+        int reviewCount = reviewRepository.countByMember(member);
+        int followerCount = followRepository.countByFollowingId(id);
+        int followingCount = followRepository.countByFollowerId(id);
+
+        return new MemberPublicResponse(member, reviewCount, followerCount, followingCount); // ✅ 인자 4개 전달
+    }
+
 }

@@ -3,13 +3,16 @@ package kr.co.ync.projectA.domain.member.controller;
 import jakarta.validation.Valid;
 import kr.co.ync.projectA.domain.member.dto.request.MemberLoginRequest;
 import kr.co.ync.projectA.domain.member.dto.request.MemberRegisterRequest;
+import kr.co.ync.projectA.domain.member.dto.response.MemberPublicResponse;
 import kr.co.ync.projectA.domain.member.dto.response.MemberResponse;
 import kr.co.ync.projectA.domain.member.service.MemberService;
 import kr.co.ync.projectA.global.security.MemberSecurity;
+import kr.co.ync.projectA.global.security.auth.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -58,10 +61,23 @@ public class MemberController {
      * Response: MemberResponse
      * 200 OK / 404 Not Found
      */
-    @GetMapping("/{id}")
-    public ResponseEntity<MemberResponse> getMember(@PathVariable Long id) {
-        Optional<MemberResponse> result = memberService.getMember(id);
+    @GetMapping("/me")
+    public ResponseEntity<MemberResponse> getMyInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        Long memberId = userDetails.getMember().getId(); // ✅ 핵심 부분 수정
+        Optional<MemberResponse> result = memberService.getMember(memberId);
+
         return result.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+
+
+    @GetMapping("/{id}/public")
+    public ResponseEntity<MemberPublicResponse> getMemberProfile(@PathVariable Long id) {
+        return ResponseEntity.ok(memberService.getPublicProfile(id));
     }
 }
