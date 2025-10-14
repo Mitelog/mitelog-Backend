@@ -73,4 +73,14 @@ public class FollowService {
                 .map(follow -> followMapper.toResponse(follow.getFollower()))
                 .toList();
     }
+
+    // ✅ 나를 팔로우하는 사람 수 (팔로워 수)
+    public int getFollowerCount(Long memberId) {
+        return followRepository.countByFollowingId(memberId);
+    }
+
+    // ✅ 내가 팔로우 중인 사람 수 (팔로잉 수)
+    public int getFollowingCount(Long memberId) {
+        return followRepository.countByFollowerId(memberId);
+    }
 }
