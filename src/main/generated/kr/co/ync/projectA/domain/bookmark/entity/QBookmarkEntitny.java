@@ -22,11 +22,11 @@ public class QBookmarkEntitny extends EntityPathBase<BookmarkEntitny> {
 
     public static final QBookmarkEntitny bookmarkEntitny = new QBookmarkEntitny("bookmarkEntitny");
 
-    public final kr.co.ync.projectA.domain.member.entity.QMemberEntity email;
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity restaurantId;
+    public final kr.co.ync.projectA.domain.member.entity.QMemberEntity member;
+
+    public final kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity restaurant;
 
     public QBookmarkEntitny(String variable) {
         this(BookmarkEntitny.class, forVariable(variable), INITS);
@@ -46,8 +46,8 @@ public class QBookmarkEntitny extends EntityPathBase<BookmarkEntitny> {
 
     public QBookmarkEntitny(Class<? extends BookmarkEntitny> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.email = inits.isInitialized("email") ? new kr.co.ync.projectA.domain.member.entity.QMemberEntity(forProperty("email")) : null;
-        this.restaurantId = inits.isInitialized("restaurantId") ? new kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity(forProperty("restaurantId"), inits.get("restaurantId")) : null;
+        this.member = inits.isInitialized("member") ? new kr.co.ync.projectA.domain.member.entity.QMemberEntity(forProperty("member")) : null;
+        this.restaurant = inits.isInitialized("restaurant") ? new kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity(forProperty("restaurant"), inits.get("restaurant")) : null;
     }
 
 }
