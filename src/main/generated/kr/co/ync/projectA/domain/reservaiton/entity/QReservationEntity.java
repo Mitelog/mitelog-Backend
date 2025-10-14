@@ -27,16 +27,16 @@ public class QReservationEntity extends EntityPathBase<ReservationEntity> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createDateTime = _super.createDateTime;
 
-    public final kr.co.ync.projectA.domain.member.entity.QMemberEntity email;
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    public final kr.co.ync.projectA.domain.member.entity.QMemberEntity member;
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedDateTime = _super.modifiedDateTime;
 
     public final NumberPath<Long> numPeople = createNumber("numPeople", Long.class);
 
-    public final kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity restaurantId;
+    public final kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity restaurant;
 
     public final DateTimePath<java.time.LocalDateTime> visit = createDateTime("visit", java.time.LocalDateTime.class);
 
@@ -58,8 +58,8 @@ public class QReservationEntity extends EntityPathBase<ReservationEntity> {
 
     public QReservationEntity(Class<? extends ReservationEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.email = inits.isInitialized("email") ? new kr.co.ync.projectA.domain.member.entity.QMemberEntity(forProperty("email")) : null;
-        this.restaurantId = inits.isInitialized("restaurantId") ? new kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity(forProperty("restaurantId"), inits.get("restaurantId")) : null;
+        this.member = inits.isInitialized("member") ? new kr.co.ync.projectA.domain.member.entity.QMemberEntity(forProperty("member")) : null;
+        this.restaurant = inits.isInitialized("restaurant") ? new kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity(forProperty("restaurant"), inits.get("restaurant")) : null;
     }
 
 }

@@ -37,6 +37,8 @@ public class QReviewEntity extends EntityPathBase<ReviewEntity> {
 
     public final NumberPath<Long> likeNum = createNumber("likeNum", Long.class);
 
+    public final kr.co.ync.projectA.domain.member.entity.QMemberEntity member;
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedDateTime = _super.modifiedDateTime;
 
@@ -65,6 +67,7 @@ public class QReviewEntity extends EntityPathBase<ReviewEntity> {
     public QReviewEntity(Class<? extends ReviewEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.email = inits.isInitialized("email") ? new kr.co.ync.projectA.domain.member.entity.QMemberEntity(forProperty("email")) : null;
+        this.member = inits.isInitialized("member") ? new kr.co.ync.projectA.domain.member.entity.QMemberEntity(forProperty("member")) : null;
         this.restaurantId = inits.isInitialized("restaurantId") ? new kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity(forProperty("restaurantId"), inits.get("restaurantId")) : null;
     }
 
