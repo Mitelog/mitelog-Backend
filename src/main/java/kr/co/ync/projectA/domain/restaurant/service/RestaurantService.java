@@ -10,16 +10,10 @@ import kr.co.ync.projectA.domain.restaurant.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-/**
- * ✅ Restaurant 관련 비즈니스 로직을 처리하는 서비스 클래스
- * (인터페이스와 구현체를 통합한 단일 클래스 버전)
- */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -31,17 +25,43 @@ public class RestaurantService {
     /** ✅ 식당 등록 */
     @Transactional
     public RestaurantResponse register(RestaurantRequest request) {
-        // 현재는 JWT 인증 미적용 상태라 임시로 1L 사용
+        // TODO: JWT 인증 연결 후 실제 로그인 유저 사용 예정
         MemberEntity owner = memberRepository.findById(1L)
                 .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
 
         RestaurantEntity entity = RestaurantMapper.toEntity(request, owner);
         RestaurantEntity saved = restaurantRepository.save(entity);
-
         return RestaurantMapper.toResponse(saved);
     }
 
-    /** ✅ 전체 조회 */
+    /** ✅ 통합 조회 (검색 + 필터 + 전체)
+     *  프론트에서 아래 형태로 요청:
+     *  /api/restaurants?keyword=ラーメン&region=東京都&category=和食
+     */
+    public Page<RestaurantResponse> searchRestaurants(
+            String keyword,
+            String region,
+            String category,
+            Pageable pageable
+    ) {
+        // 빈 문자열("")이면 null 처리 → JPQL에서 조건 무시
+        if (keyword != null && keyword.trim().isEmpty()) keyword = null;
+        if (region != null && region.trim().isEmpty()) region = null;
+        if (category != null && category.trim().isEmpty()) category = null;
+
+        Page<RestaurantEntity> restaurants;
+
+        // 모든 필터가 비어 있으면 전체 조회
+        if (keyword == null && region == null && category == null) {
+            restaurants = restaurantRepository.findAll(pageable);
+        } else {
+            restaurants = restaurantRepository.findByConditions(keyword, region, category, pageable);
+        }
+
+        return restaurants.map(RestaurantMapper::toResponse);
+    }
+
+    /** ✅ 전체 조회 (기존 유지 — 필요 시 단독 호출 가능) */
     public Page<RestaurantResponse> getAll(PageRequest pageRequest) {
         return restaurantRepository.findAll(pageRequest)
                 .map(RestaurantMapper::toResponse);
@@ -76,27 +96,5 @@ public class RestaurantService {
     @Transactional
     public void delete(Long id) {
         restaurantRepository.deleteById(id);
-    }
-
-    /** ✅ 지역별 조회 */
-    public List<RestaurantResponse> getByArea(String area) {
-        return restaurantRepository.findByArea(area)
-                .stream()
-                .map(RestaurantMapper::toResponse)
-                .collect(Collectors.toList());
-    }
-
-    /** ✅ 카테고리별 조회 */
-    public Page<RestaurantResponse> getByCategory(String category, PageRequest pageRequest) {
-        return restaurantRepository.findByCategoryName(category, pageRequest)
-                .map(RestaurantMapper::toResponse);
-    }
-
-    /** ✅ 이름 검색 */
-    public List<RestaurantResponse> searchByName(String keyword) {
-        return restaurantRepository.findByNameContaining(keyword)
-                .stream()
-                .map(RestaurantMapper::toResponse)
-                .collect(Collectors.toList());
     }
 }
