@@ -45,10 +45,22 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize ->
                         authorize
+                                // ✅ 1. OPTIONS 허용 (CORS preflight)
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                .requestMatchers("/auth/**", "/api/members/register", "/api/categories/**").permitAll()
+
+                                // ✅ 2. 로그인 / 회원가입은 인증 없이 가능
+                                .requestMatchers(HttpMethod.POST, "/api/members/register").permitAll()
+                                .requestMatchers("/auth/**").permitAll()
+
+                                // ✅ 3. 공개 프로필 및 공개 데이터
+                                .requestMatchers(HttpMethod.GET, "/api/members/*/public").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/restaurants/**").permitAll()
+
+                                // ✅ 4. 인증 필요한 영역
+                                .requestMatchers("/api/members/me").authenticated()
                                 .requestMatchers("/api/mypage/**").authenticated()
+
+                                // ✅ 5. 그 외 전부 인증 필요
                                 .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception

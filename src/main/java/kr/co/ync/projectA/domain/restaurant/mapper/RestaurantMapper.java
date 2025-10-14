@@ -4,7 +4,6 @@ import kr.co.ync.projectA.domain.member.entity.MemberEntity;
 import kr.co.ync.projectA.domain.restaurant.dto.request.RestaurantRequest;
 import kr.co.ync.projectA.domain.restaurant.dto.response.RestaurantResponse;
 import kr.co.ync.projectA.domain.restaurant.entity.RestaurantEntity;
-import java.util.List;
 
 public class RestaurantMapper {
 
@@ -20,13 +19,6 @@ public class RestaurantMapper {
     }
 
     public static RestaurantResponse toResponse(RestaurantEntity entity) {
-        // ✅ 카테고리 이름 추출
-        List<String> categoryNames = entity.getCategoryMappings() == null
-                ? List.of()
-                : entity.getCategoryMappings().stream()
-                .map(mapping -> mapping.getCategory().getName())
-                .toList();
-
         return RestaurantResponse.builder()
                 .id(entity.getId())
                 .ownerId(entity.getOwner().getId())
@@ -36,7 +28,6 @@ public class RestaurantMapper {
                 .area(entity.getArea())
                 .phone(entity.getPhone())
                 .image(entity.getImage())
-                .categoryNames(categoryNames)
                 .build();
     }
 }
