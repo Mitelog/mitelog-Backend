@@ -47,7 +47,7 @@ public class SecurityConfig {
                         authorize
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                 .requestMatchers("/auth/**", "/api/members/register").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/restaurants/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/restaurants/**", "/api/categories/**").permitAll()
                                 .requestMatchers("/api/mypage/**").authenticated()
                                 .anyRequest().authenticated()
                 )
