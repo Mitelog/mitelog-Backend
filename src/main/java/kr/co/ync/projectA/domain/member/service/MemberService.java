@@ -77,15 +77,25 @@ public class MemberService {
                 .map(MemberMapper::toResponse);
     }
 
-    public MemberPublicResponse getPublicProfile(Long id) {
-        MemberEntity member = memberRepository.findById(id)
+    public MemberPublicResponse getPublicProfile(Long targetId, Long viewerId) {
+        MemberEntity member = memberRepository.findById(targetId)
                 .orElseThrow(() -> new RuntimeException("회원이 존재하지 않습니다."));
 
         int reviewCount = reviewRepository.countByMember(member);
-        int followerCount = followRepository.countByFollowingId(id);
-        int followingCount = followRepository.countByFollowerId(id);
+        int followerCount = followRepository.countByFollowingId(targetId);
+        int followingCount = followRepository.countByFollowerId(targetId);
 
-        return new MemberPublicResponse(member, reviewCount, followerCount, followingCount); // ✅ 인자 4개 전달
+        boolean isFollowed = false;
+
+        // ✅ 로그인한 유저(viewer)가 프로필 주인(target)을 팔로우했는지 확인
+        if (viewerId != null && !viewerId.equals(targetId)) {
+            isFollowed = followRepository.existsByFollowerIdAndFollowingId(viewerId, targetId);
+        }
+
+        // ✅ isFollowed 값을 포함해 응답
+        return new MemberPublicResponse(member, reviewCount, followerCount, followingCount, isFollowed);
     }
+
+
 
 }

@@ -6,6 +6,8 @@ import kr.co.ync.projectA.domain.member.dto.request.MemberRegisterRequest;
 import kr.co.ync.projectA.domain.member.dto.response.MemberPublicResponse;
 import kr.co.ync.projectA.domain.member.dto.response.MemberResponse;
 import kr.co.ync.projectA.domain.member.service.MemberService;
+import kr.co.ync.projectA.global.common.dto.response.ResponseDTO;
+import kr.co.ync.projectA.global.jwt.JwtProvider;
 import kr.co.ync.projectA.global.security.MemberSecurity;
 import kr.co.ync.projectA.global.security.auth.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final MemberSecurity memberSecurity;
+    private final JwtProvider jwtProvider;
 
     /**
      * 회원가입 (비인증 접근 허용)
@@ -77,7 +80,25 @@ public class MemberController {
 
 
     @GetMapping("/{id}/public")
-    public ResponseEntity<MemberPublicResponse> getMemberProfile(@PathVariable Long id) {
-        return ResponseEntity.ok(memberService.getPublicProfile(id));
+    public ResponseEntity<ResponseDTO<MemberPublicResponse>> getMemberProfile(
+            @PathVariable Long id,
+            @RequestHeader(value = "Authorization", required = false) String token
+    ) {
+        Long viewerId = null;
+
+        // ✅ JWT 토큰이 있다면 현재 로그인한 사용자 ID 추출
+        if (token != null && token.startsWith("Bearer ")) {
+            try {
+                viewerId = jwtProvider.getUserIdFromToken(token);
+            } catch (Exception e) {
+                viewerId = null; // 잘못된 토큰이면 비로그인 취급
+            }
+        }
+
+        // ✅ targetId(프로필 주인)와 viewerId(현재 로그인한 사람) 전달
+        MemberPublicResponse response = memberService.getPublicProfile(id, viewerId);
+        return ResponseEntity.ok(new ResponseDTO<>(200, "조회 성공", response));
     }
+
+
 }
