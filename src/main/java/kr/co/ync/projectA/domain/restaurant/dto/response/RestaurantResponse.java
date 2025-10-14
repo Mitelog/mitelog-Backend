@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -16,4 +18,6 @@ public class RestaurantResponse {
     private String area;
     private String phone;
     private String image;
+
+    private List<String> categoryNames;
 }
