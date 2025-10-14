@@ -1,4 +1,5 @@
 package kr.co.ync.projectA.domain.restaurant.dto.response;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,4 +17,6 @@ public class RestaurantResponse {
     private String area;
     private String phone;
     private String image;
+
+    private List<String> categoryNames;
 }
