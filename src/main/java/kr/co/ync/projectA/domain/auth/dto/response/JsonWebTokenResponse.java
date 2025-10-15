@@ -13,4 +13,5 @@ public class JsonWebTokenResponse {
 
     private String accessToken;
     private String refreshToken;
+    private Long memberId; // 프론트에서 로그인 사용자 식별용
 }
