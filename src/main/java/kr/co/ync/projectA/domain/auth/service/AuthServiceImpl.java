@@ -44,6 +44,7 @@ public class AuthServiceImpl implements AuthService {
         return JsonWebTokenResponse.builder()
                 .accessToken(jwtProvider.generateAccessToken(member.getEmail()))
                 .refreshToken(jwtProvider.generateRefreshToken(member.getEmail()))
+                .memberId(member.getId())   // memberid 식별용
                 .build();
     }
 
