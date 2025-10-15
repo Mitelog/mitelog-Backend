@@ -56,6 +56,8 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/members/*/public").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/restaurants/**").permitAll()
 
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
                                 // ✅ 4. 인증 필요한 영역
                                 .requestMatchers("/api/members/me").authenticated()
                                 .requestMatchers("/api/mypage/**").authenticated()
