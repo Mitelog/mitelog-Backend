@@ -3,7 +3,7 @@ package kr.co.ync.projectA.domain.bookmark.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import kr.co.ync.projectA.domain.bookmark.entity.BookmarkEntitny;
+import kr.co.ync.projectA.domain.bookmark.entity.BookmarkEntity;
 
 import java.util.stream.IntStream;
 
@@ -18,12 +18,12 @@ class BookmarkRepositoryTest {
         IntStream.rangeClosed(1, 30)
                 .forEach(i -> {
                     String email = "user" + i + "@aaa.com";
-                    BookmarkEntitny bookmarkEntitny = BookmarkEntitny
+                    BookmarkEntity bookmarkEntity = BookmarkEntity
                             .builder()
 //                            .restaurantId()
                             .build();
 
-                    bookmarkRepository.save(bookmarkEntitny);
+                    bookmarkRepository.save(bookmarkEntity);
                 });
     }
 }

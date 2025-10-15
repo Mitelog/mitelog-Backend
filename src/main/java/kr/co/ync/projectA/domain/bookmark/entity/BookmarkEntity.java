@@ -12,7 +12,7 @@ import kr.co.ync.projectA.domain.restaurant.entity.RestaurantEntity;
 @Builder
 @Getter
 @ToString
-public class BookmarkEntitny {
+public class BookmarkEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
