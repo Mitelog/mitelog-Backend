@@ -10,22 +10,25 @@ import kr.co.ync.projectA.domain.restaurant.entity.RestaurantEntity;
 @AllArgsConstructor
 @Builder
 @Getter
-@ToString
+@Setter
+@ToString(exclude = "restaurant")
 public class MenuEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // ✅ restaurantId → restaurant 로 명확하게 변경
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
-    private RestaurantEntity restaurantId;
+    private RestaurantEntity restaurant;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String name;
 
     @Column(nullable = false)
-    private Long price;
+    private int price;
 
-    @Column
-    private String image;
+    @Column(length = 255)
+    private String imageUrl; // ✅ 이름 명확화
 }
