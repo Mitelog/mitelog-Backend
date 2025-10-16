@@ -42,6 +42,7 @@ public class RestaurantEntity extends BaseTimeEntity {
     @Column
     private String image;
 
+    @Builder.Default
     @Column(nullable = false)
     private Double averageRating = 0.0;
 
