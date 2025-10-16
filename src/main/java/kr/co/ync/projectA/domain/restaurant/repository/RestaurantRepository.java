@@ -13,10 +13,12 @@ import java.util.List;
 @Repository
 public interface RestaurantRepository extends JpaRepository<RestaurantEntity, Long> {
 
+    /* ================= 일반 사용자용 ================= */
+
     // 지역별 조회
     List<RestaurantEntity> findByArea(String area);
 
-    // 이름 검색
+    // 이름 검색 (사용자용: 리스트 반환)
     List<RestaurantEntity> findByNameContaining(String keyword);
 
     // 카테고리별 조회 (카테고리 조인)
@@ -37,5 +39,17 @@ public interface RestaurantRepository extends JpaRepository<RestaurantEntity, Lo
         """
     )
     Page<RestaurantEntity> findByCategoryName(@Param("categoryName") String categoryName, Pageable pageable);
-}
 
+
+    /* ================= 관리자 페이지용 ================= */
+
+    // 🔍 페이징 기반 이름 검색
+    Page<RestaurantEntity> findByNameContaining(String name, Pageable pageable);
+
+    // 🔍 주소 검색
+    Page<RestaurantEntity> findByAddressContaining(String address, Pageable pageable);
+
+    // 🔍 ID 정확히 검색 (페이징 구조 유지)
+    @Query("SELECT r FROM RestaurantEntity r WHERE r.id = :id")
+    Page<RestaurantEntity> findByIdExact(@Param("id") Long id, Pageable pageable);
+}
