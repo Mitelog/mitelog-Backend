@@ -36,7 +36,6 @@ public class RestaurantMapper {
                 .phone(entity.getPhone())
                 .image(entity.getImage())
                 .categoryNames(categoryNames)
-                .averageRating(entity.getAverageRating())
                 .build();
     }
 }

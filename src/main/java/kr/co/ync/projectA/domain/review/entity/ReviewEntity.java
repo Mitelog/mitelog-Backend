@@ -2,7 +2,6 @@ package kr.co.ync.projectA.domain.review.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import kr.co.ync.projectA.domain.member.entity.MemberEntity;
 import kr.co.ync.projectA.domain.restaurant.entity.RestaurantEntity;
 import kr.co.ync.projectA.global.common.entity.BaseTimeEntity;
@@ -13,41 +12,37 @@ import kr.co.ync.projectA.global.common.entity.BaseTimeEntity;
 @AllArgsConstructor
 @Builder
 @Getter
-@ToString(exclude = {"restaurant", "member"})
+@Setter
+@ToString
 public class ReviewEntity extends BaseTimeEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /* 리뷰 대상 가게 */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
-    private RestaurantEntity restaurant;
+    private RestaurantEntity restaurantId;
 
-    /* 리뷰 작성자 */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private MemberEntity member;
+    @JoinColumn(name = "email", nullable = false)//fk //이메일 어노테이션도 있다 다시 생각해보기
+    private MemberEntity email;
 
-    /* 평점 (1~5 정수) */
     @Column(nullable = false)
-    private int rating;
+    private Long rating; //1~5 사이 정수값만 받을거임
 
-    /* 리뷰 제목 */
     @Column(nullable = false)
     private String title;
 
-    /* 리뷰 내용 */
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable = false)
     private String content;
 
-    /* 이미지 경로 */
     @Column
     private String image;
 
-    /* 좋아요 수 (기본값 0) */
     @Column(nullable = false)
-    @ColumnDefault("0")
-    private Long likeNum;
+    private Long likeNum = 0L; //디폴트 값 이렇게 주는게 맞는지 물어보기
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id", nullable = false)
+    private MemberEntity member;
 }

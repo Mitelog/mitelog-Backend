@@ -18,7 +18,5 @@ public class RestaurantResponse {
     private String phone;
     private String image;
 
-    private Double averageRating;
-
     private List<String> categoryNames;
 }
