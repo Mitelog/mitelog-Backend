@@ -42,6 +42,9 @@ public class RestaurantEntity extends BaseTimeEntity {
     @Column
     private String image;
 
+    @Column(nullable = false)
+    private Double averageRating = 0.0;
+
     // ✅ 식당 ↔ 카테고리 매핑
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RestaurantCategoryMapEntity> categoryMappings = new ArrayList<>();
