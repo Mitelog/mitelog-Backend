@@ -28,6 +28,8 @@ public class QRestaurantEntity extends EntityPathBase<RestaurantEntity> {
 
     public final StringPath area = createString("area");
 
+    public final NumberPath<Double> averageRating = createNumber("averageRating", Double.class);
+
     public final ListPath<kr.co.ync.projectA.domain.restaurantCategoryMapEntity.entity.RestaurantCategoryMapEntity, kr.co.ync.projectA.domain.restaurantCategoryMapEntity.entity.QRestaurantCategoryMapEntity> categoryMappings = this.<kr.co.ync.projectA.domain.restaurantCategoryMapEntity.entity.RestaurantCategoryMapEntity, kr.co.ync.projectA.domain.restaurantCategoryMapEntity.entity.QRestaurantCategoryMapEntity>createList("categoryMappings", kr.co.ync.projectA.domain.restaurantCategoryMapEntity.entity.RestaurantCategoryMapEntity.class, kr.co.ync.projectA.domain.restaurantCategoryMapEntity.entity.QRestaurantCategoryMapEntity.class, PathInits.DIRECT2);
 
     //inherited

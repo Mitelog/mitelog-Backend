@@ -29,8 +29,6 @@ public class QReviewEntity extends EntityPathBase<ReviewEntity> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createDateTime = _super.createDateTime;
 
-    public final kr.co.ync.projectA.domain.member.entity.QMemberEntity email;
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath image = createString("image");
@@ -42,9 +40,9 @@ public class QReviewEntity extends EntityPathBase<ReviewEntity> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedDateTime = _super.modifiedDateTime;
 
-    public final NumberPath<Long> rating = createNumber("rating", Long.class);
+    public final NumberPath<Integer> rating = createNumber("rating", Integer.class);
 
-    public final kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity restaurantId;
+    public final kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity restaurant;
 
     public final StringPath title = createString("title");
 
@@ -66,9 +64,8 @@ public class QReviewEntity extends EntityPathBase<ReviewEntity> {
 
     public QReviewEntity(Class<? extends ReviewEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.email = inits.isInitialized("email") ? new kr.co.ync.projectA.domain.member.entity.QMemberEntity(forProperty("email")) : null;
         this.member = inits.isInitialized("member") ? new kr.co.ync.projectA.domain.member.entity.QMemberEntity(forProperty("member")) : null;
-        this.restaurantId = inits.isInitialized("restaurantId") ? new kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity(forProperty("restaurantId"), inits.get("restaurantId")) : null;
+        this.restaurant = inits.isInitialized("restaurant") ? new kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity(forProperty("restaurant"), inits.get("restaurant")) : null;
     }
 
 }

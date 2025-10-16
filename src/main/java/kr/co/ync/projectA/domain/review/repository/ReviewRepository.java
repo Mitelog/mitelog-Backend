@@ -20,13 +20,14 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
     int countByMember(MemberEntity member);
 
     // ✅ 필드명이 restaurantId니까, 여기 이름도 restaurantId로
-    List<ReviewEntity> findByRestaurantId(RestaurantEntity restaurantId);
+    List<ReviewEntity> findByRestaurantId(RestaurantEntity restaurant);
 
     List<ReviewEntity> findByMember(MemberEntity member);
 
-    @Query("SELECT AVG(r.rating) FROM ReviewEntity r WHERE r.restaurantId.id = :restaurantId")
-    Double findAverageRatingByRestaurantId(@Param("restaurantId") Long restaurantId);
+    @Query("SELECT AVG(r.rating) FROM ReviewEntity r WHERE r.restaurant.id = :restaurantId")
+    Double findAverageRatingByRestaurantId(@Param("restaurantId") Long restaurant);
 
+    List<ReviewEntity> findByRestaurant(RestaurantEntity restaurant);
 
     /* ================= 관리자 페이지용 ================= */
 
