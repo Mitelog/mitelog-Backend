@@ -2,10 +2,10 @@ package kr.co.ync.projectA.domain.review.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import kr.co.ync.projectA.domain.member.entity.MemberEntity;
 import kr.co.ync.projectA.domain.restaurant.entity.RestaurantEntity;
 import kr.co.ync.projectA.global.common.entity.BaseTimeEntity;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "tbl_review")
@@ -13,9 +13,9 @@ import kr.co.ync.projectA.global.common.entity.BaseTimeEntity;
 @AllArgsConstructor
 @Builder
 @Getter
-@ToString(exclude = {"restaurant", "member"})
+@Setter
+@ToString
 public class ReviewEntity extends BaseTimeEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

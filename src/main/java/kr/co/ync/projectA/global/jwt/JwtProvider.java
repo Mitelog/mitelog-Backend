@@ -66,16 +66,22 @@ public class JwtProvider {
      *    - 필요하다면 .claim("mid", memberId) 처럼 최소 클레임을 추가하는 것도 가능
      */
     public String generateAccessToken(String email) {
+        // DB에서 회원 정보 조회
+        MemberEntity member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> MemberNotFoundException.EXCEPTION);
+
         return Jwts.builder()
-                .header() // header에 커스텀 타입 추가 (ACCESS/REFRESH 구분용)
-                .add("typ", "JWT")                // 표준 헤더 유지
-                .add("token_type", JwtType.ACCESS) // 커스텀 타입 추가
+                .header()
+                .add("typ", "JWT")
+                .add("token_type", JwtType.ACCESS)
                 .add(Header.JWT_TYPE, JwtType.ACCESS)
                 .and()
-                .subject(email) // sub
-                .issuedAt(new Date()) // iat
-                .expiration(new Date(System.currentTimeMillis() + jwtProperties.getExpiration())) // exp
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256) // HS256 서명
+                .subject(email)
+                // ✅ 여기서 role 추가
+                .claim("role", member.getRole().name())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + jwtProperties.getExpiration()))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
