@@ -12,6 +12,7 @@ import kr.co.ync.projectA.global.common.entity.BaseTimeEntity;
 @AllArgsConstructor
 @Builder
 @Getter
+@Setter
 @ToString
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class MemberEntity extends BaseTimeEntity {
