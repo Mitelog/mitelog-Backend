@@ -23,6 +23,8 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
 
     List<ReviewEntity> findByMember(MemberEntity member);
 
+    Page<ReviewEntity> findByMember(MemberEntity member, Pageable pageable);
+    
     Page<ReviewEntity> findByRestaurant(RestaurantEntity restaurant, Pageable pageable);
 
     @Query("SELECT AVG(r.rating) FROM ReviewEntity r WHERE r.restaurant.id = :restaurantId")

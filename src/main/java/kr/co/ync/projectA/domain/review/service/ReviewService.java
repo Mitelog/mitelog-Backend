@@ -120,4 +120,16 @@ public class ReviewService {
         restaurantRepository.save(restaurant);
     }
 
+    /* ✅ 로그인한 회원의 리뷰 조회 (페이징) */
+    public Page<ReviewResponse> getReviewsByMemberEmail(String userEmail, int page, int size) {
+        MemberEntity member = memberRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보를 찾을 수 없습니다."));
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createDateTime"));
+
+        return reviewRepository.findByMember(member, pageable)
+                .map(ReviewMapper::toResponse);
+    }
+
+
 }
