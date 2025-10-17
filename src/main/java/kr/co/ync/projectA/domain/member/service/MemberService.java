@@ -5,13 +5,16 @@ import kr.co.ync.projectA.domain.member.dto.request.MemberLoginRequest;
 import kr.co.ync.projectA.domain.member.dto.request.MemberRegisterRequest;
 import kr.co.ync.projectA.domain.member.dto.response.MemberPublicResponse;
 import kr.co.ync.projectA.domain.member.dto.response.MemberResponse;
+import kr.co.ync.projectA.domain.member.dto.response.MemberUpdate;
 import kr.co.ync.projectA.domain.member.entity.MemberEntity;
 import kr.co.ync.projectA.domain.member.mapper.MemberMapper;
 import kr.co.ync.projectA.domain.member.repository.MemberRepository;
 import kr.co.ync.projectA.domain.review.repository.ReviewRepository;
+import kr.co.ync.projectA.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -96,6 +99,15 @@ public class MemberService {
         return new MemberPublicResponse(member, reviewCount, followerCount, followingCount, isFollowed);
     }
 
+    @Transactional
+    public void updateMember(Long id, MemberUpdate dto) {
+        MemberEntity member = memberRepository.findById(id)
+                .orElseThrow(() -> new CustomException("회원 정보를 찾을 수 없습니다."));
 
-
+        if (dto.getName() != null) member.setName(dto.getName());
+        if (dto.getPhone() != null) member.setPhone(dto.getPhone());
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            member.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+    }
 }
