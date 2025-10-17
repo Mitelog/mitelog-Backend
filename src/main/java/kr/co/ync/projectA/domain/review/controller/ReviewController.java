@@ -75,4 +75,16 @@ public class ReviewController {
         List<ReviewResponse> reviews = reviewService.getReviewsByMemberId(memberId);
         return ResponseEntity.ok(reviews);
     }
+
+    /* ✅ 로그인한 사용자의 리뷰 목록 조회 (마이페이지용, 페이징 지원) */
+    @GetMapping("/member/me")
+    public ResponseEntity<Page<ReviewResponse>> getMyReviews(
+            @AuthenticationPrincipal CustomUserDetails user,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        Page<ReviewResponse> reviews = reviewService.getReviewsByMemberEmail(user.getUsername(), page, size);
+        return ResponseEntity.ok(reviews);
+    }
+
 }
