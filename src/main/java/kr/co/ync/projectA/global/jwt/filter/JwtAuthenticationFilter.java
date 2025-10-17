@@ -36,7 +36,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (path.startsWith("/auth") ||
                 path.equals("/api/members/register") ||
                 path.equals("/api/members/register/") ||
-                path.matches("^/api/members/\\d+/public$") // ✅ 공개 프로필만 허용
+                path.matches("^/api/members/\\d+/public$") || // ✅ 공개 프로필만 허용
+                path.startsWith("/api/reviews/restaurant") // ✅ 리뷰 조회는 로그인 없이 허용
         ) {
             System.out.println("✅ Whitelisted path: " + path);
             filterChain.doFilter(request, response);
