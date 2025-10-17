@@ -55,6 +55,8 @@ public class SecurityConfig {
                                 // ✅ 3. 공개 프로필 및 공개 데이터
                                 .requestMatchers(HttpMethod.GET, "/api/members/*/public").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/restaurants/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/menus/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
 
                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
