@@ -19,6 +19,8 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
 
     int countByMember(MemberEntity member);
 
+    int countByRestaurantId(Long restaurantId);
+
     // ✅ 필드명이 restaurantId니까, 여기 이름도 restaurantId로
     List<ReviewEntity> findByRestaurantId(RestaurantEntity restaurant);
 

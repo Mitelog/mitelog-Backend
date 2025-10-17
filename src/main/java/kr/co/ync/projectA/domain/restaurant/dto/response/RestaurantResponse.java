@@ -22,6 +22,7 @@ public class RestaurantResponse {
     private String image;
     private Double averageRating;
     private List<String> categoryNames;
+    private int reviewCount;
 
     public static RestaurantResponse fromEntity(RestaurantEntity entity) {
         return RestaurantResponse.builder()

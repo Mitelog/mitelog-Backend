@@ -7,6 +7,7 @@ import kr.co.ync.projectA.domain.restaurant.dto.response.RestaurantResponse;
 import kr.co.ync.projectA.domain.restaurant.entity.RestaurantEntity;
 import kr.co.ync.projectA.domain.restaurant.mapper.RestaurantMapper;
 import kr.co.ync.projectA.domain.restaurant.repository.RestaurantRepository;
+import kr.co.ync.projectA.domain.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +30,7 @@ public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
     private final MemberRepository memberRepository;
+    private final ReviewRepository reviewRepository;
 
     /** ✅ 식당 등록 */
     @Transactional
@@ -53,7 +55,9 @@ public class RestaurantService {
     public RestaurantResponse getById(Long id) {
         RestaurantEntity restaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("식당을 찾을 수 없습니다."));
-        return RestaurantMapper.toResponse(restaurant);
+        int reviewCount = reviewRepository.countByRestaurantId(id);
+
+        return RestaurantMapper.toResponse(restaurant, reviewCount);
     }
 
     /** ✅ 수정 */
