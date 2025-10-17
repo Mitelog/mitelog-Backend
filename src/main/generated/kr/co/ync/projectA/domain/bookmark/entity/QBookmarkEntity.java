@@ -11,16 +11,16 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QBookmarkEntitny is a Querydsl query type for BookmarkEntitny
+ * QBookmarkEntity is a Querydsl query type for BookmarkEntity
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QBookmarkEntitny extends EntityPathBase<BookmarkEntitny> {
+public class QBookmarkEntity extends EntityPathBase<BookmarkEntity> {
 
-    private static final long serialVersionUID = 79048249L;
+    private static final long serialVersionUID = 418191947L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QBookmarkEntitny bookmarkEntitny = new QBookmarkEntitny("bookmarkEntitny");
+    public static final QBookmarkEntity bookmarkEntity = new QBookmarkEntity("bookmarkEntity");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -28,23 +28,23 @@ public class QBookmarkEntitny extends EntityPathBase<BookmarkEntitny> {
 
     public final kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity restaurant;
 
-    public QBookmarkEntitny(String variable) {
-        this(BookmarkEntitny.class, forVariable(variable), INITS);
+    public QBookmarkEntity(String variable) {
+        this(BookmarkEntity.class, forVariable(variable), INITS);
     }
 
-    public QBookmarkEntitny(Path<? extends BookmarkEntitny> path) {
+    public QBookmarkEntity(Path<? extends BookmarkEntity> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QBookmarkEntitny(PathMetadata metadata) {
+    public QBookmarkEntity(PathMetadata metadata) {
         this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QBookmarkEntitny(PathMetadata metadata, PathInits inits) {
-        this(BookmarkEntitny.class, metadata, inits);
+    public QBookmarkEntity(PathMetadata metadata, PathInits inits) {
+        this(BookmarkEntity.class, metadata, inits);
     }
 
-    public QBookmarkEntitny(Class<? extends BookmarkEntitny> type, PathMetadata metadata, PathInits inits) {
+    public QBookmarkEntity(Class<? extends BookmarkEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new kr.co.ync.projectA.domain.member.entity.QMemberEntity(forProperty("member")) : null;
         this.restaurant = inits.isInitialized("restaurant") ? new kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity(forProperty("restaurant"), inits.get("restaurant")) : null;

@@ -24,13 +24,13 @@ public class QMenuEntity extends EntityPathBase<MenuEntity> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath image = createString("image");
+    public final StringPath imageUrl = createString("imageUrl");
 
     public final StringPath name = createString("name");
 
-    public final NumberPath<Long> price = createNumber("price", Long.class);
+    public final NumberPath<Integer> price = createNumber("price", Integer.class);
 
-    public final kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity restaurantId;
+    public final kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity restaurant;
 
     public QMenuEntity(String variable) {
         this(MenuEntity.class, forVariable(variable), INITS);
@@ -50,7 +50,7 @@ public class QMenuEntity extends EntityPathBase<MenuEntity> {
 
     public QMenuEntity(Class<? extends MenuEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.restaurantId = inits.isInitialized("restaurantId") ? new kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity(forProperty("restaurantId"), inits.get("restaurantId")) : null;
+        this.restaurant = inits.isInitialized("restaurant") ? new kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity(forProperty("restaurant"), inits.get("restaurant")) : null;
     }
 
 }
