@@ -8,4 +8,10 @@ import lombok.Getter;
 public class CustomException extends RuntimeException {
     private int status;
     private String message;
+
+    public CustomException(String message) {
+        super(message);
+        this.status = 400; // 기본 BAD_REQUEST
+        this.message = message;
+    }
 }

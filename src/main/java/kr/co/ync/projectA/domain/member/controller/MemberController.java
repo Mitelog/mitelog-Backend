@@ -5,6 +5,7 @@ import kr.co.ync.projectA.domain.member.dto.request.MemberLoginRequest;
 import kr.co.ync.projectA.domain.member.dto.request.MemberRegisterRequest;
 import kr.co.ync.projectA.domain.member.dto.response.MemberPublicResponse;
 import kr.co.ync.projectA.domain.member.dto.response.MemberResponse;
+import kr.co.ync.projectA.domain.member.dto.response.MemberUpdate;
 import kr.co.ync.projectA.domain.member.service.MemberService;
 import kr.co.ync.projectA.global.common.dto.response.ResponseDTO;
 import kr.co.ync.projectA.global.jwt.JwtProvider;
@@ -98,6 +99,20 @@ public class MemberController {
         // ✅ targetId(프로필 주인)와 viewerId(현재 로그인한 사람) 전달
         MemberPublicResponse response = memberService.getPublicProfile(id, viewerId);
         return ResponseEntity.ok(new ResponseDTO<>(200, "조회 성공", response));
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<ResponseDTO<?>> updateProfile(
+            @AuthenticationPrincipal CustomUserDetails user,
+            @RequestBody MemberUpdate dto
+    ) {
+        memberService.updateMember(user.getId(), dto);
+        return ResponseEntity.ok(
+                ResponseDTO.builder()
+                        .status(200)
+                        .msg("회원 정보 수정 성공")
+                        .build()
+        );
     }
 
 

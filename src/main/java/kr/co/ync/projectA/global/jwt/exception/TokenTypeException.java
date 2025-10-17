@@ -8,6 +8,6 @@ public class TokenTypeException extends CustomException {
     public static final CustomException EXCEPTION = new TokenTypeException();
 
     public TokenTypeException() {
-        super(400, "잘못된 JWT 타입");
+        super("잘못된 JWT 타입");
     }
 }
