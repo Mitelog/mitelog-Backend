@@ -2,6 +2,7 @@ package kr.co.ync.projectA.domain.review.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -58,10 +59,11 @@ public class ReviewController {
 
     /* ✅ 특정 식당의 리뷰 목록 조회 */
     @GetMapping("/restaurant/{restaurantId}")
-    public ResponseEntity<List<ReviewResponse>> getReviewsByRestaurant(
-            @PathVariable Long restaurantId
-    ) {
-        List<ReviewResponse> reviews = reviewService.getReviewsByRestaurantId(restaurantId);
+    public ResponseEntity<Page<ReviewResponse>> getReviewsByRestaurant(
+            @PathVariable Long restaurantId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {  // 한 페이지당 5개씩
+        Page<ReviewResponse> reviews = reviewService.getReviewsByRestaurantId(restaurantId, page, size);
         return ResponseEntity.ok(reviews);
     }
 

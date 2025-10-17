@@ -2,6 +2,10 @@ package kr.co.ync.projectA.domain.review.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import kr.co.ync.projectA.domain.member.entity.MemberEntity;
@@ -86,15 +90,16 @@ public class ReviewService {
         updateRestaurantAverageRating(review.getRestaurant());
     }
 
-    /* ✅ 식당별 리뷰 조회 */
-    public List<ReviewResponse> getReviewsByRestaurantId(Long restaurantId) {
+    /* ✅ 식당별 리뷰 조회 (페이징 적용) */
+    public Page<ReviewResponse> getReviewsByRestaurantId(Long restaurantId, int page, int size) {
         RestaurantEntity restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new IllegalArgumentException("가게 정보를 찾을 수 없습니다."));
 
-        return reviewRepository.findByRestaurant(restaurant)
-                .stream()
-                .map(ReviewMapper::toResponse)
-                .collect(Collectors.toList());
+        // 최신순 정렬
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        return reviewRepository.findByRestaurant(restaurant, pageable)
+                .map(ReviewMapper::toResponse);
     }
 
     /* ✅ 회원별 리뷰 조회 */
