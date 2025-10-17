@@ -16,6 +16,14 @@ public class CustomUserDetails implements UserDetails {
     //    여기서는 MemberEntity 자체를 들고 다니되, 외부로 노출은 최소화(게터 제공)하는 패턴.
     private final MemberEntity member;
 
+    public Long getId() {
+        return member.getId();
+    }
+
+    public String getEmail() {
+        return member.getEmail();
+    }
+
     // 📌 스프링 시큐리티가 요구하는 권한(ROLE_*) 목록
     private final Collection<? extends GrantedAuthority> authorities;
 
