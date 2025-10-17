@@ -39,4 +39,26 @@ public class RestaurantMapper {
                 .averageRating(entity.getAverageRating())
                 .build();
     }
+
+    public static RestaurantResponse toResponse(RestaurantEntity entity, int reviewCount) {
+        List<String> categoryNames = entity.getCategoryMappings() == null
+                ? List.of()
+                : entity.getCategoryMappings().stream()
+                .map(mapping -> mapping.getCategory().getName())
+                .toList();
+
+        return RestaurantResponse.builder()
+                .id(entity.getId())
+                .ownerId(entity.getOwner().getId())
+                .ownerEmail(entity.getOwner().getEmail())
+                .name(entity.getName())
+                .address(entity.getAddress())
+                .area(entity.getArea())
+                .phone(entity.getPhone())
+                .image(entity.getImage())
+                .categoryNames(categoryNames)
+                .averageRating(entity.getAverageRating())
+                .reviewCount(reviewCount)
+                .build();
+    }
 }
