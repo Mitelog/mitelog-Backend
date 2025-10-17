@@ -96,7 +96,7 @@ public class ReviewService {
                 .orElseThrow(() -> new IllegalArgumentException("가게 정보를 찾을 수 없습니다."));
 
         // 최신순 정렬
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDateTime"));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createDateTime"));
 
         return reviewRepository.findByRestaurant(restaurant, pageable)
                 .map(ReviewMapper::toResponse);
