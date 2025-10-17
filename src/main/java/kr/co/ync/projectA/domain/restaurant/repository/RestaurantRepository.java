@@ -14,7 +14,10 @@ import java.util.List;
 public interface RestaurantRepository extends JpaRepository<RestaurantEntity, Long> {
 
     /* ================= 일반 사용자용 ================= */
-
+    
+    // 레스토랑 페이징 기능
+    Page<RestaurantEntity> findByOwnerId(Long ownerId, Pageable pageable);
+    
     // 지역별 조회
     List<RestaurantEntity> findByArea(String area);
 

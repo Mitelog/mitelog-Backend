@@ -3,12 +3,15 @@ package kr.co.ync.projectA.domain.restaurant.controller;
 import kr.co.ync.projectA.domain.restaurant.dto.request.RestaurantRequest;
 import kr.co.ync.projectA.domain.restaurant.dto.response.RestaurantResponse;
 import kr.co.ync.projectA.domain.restaurant.service.RestaurantService;
+import kr.co.ync.projectA.global.common.dto.response.ResponseDTO;
+import kr.co.ync.projectA.global.security.auth.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.util.List;
 
@@ -77,5 +80,23 @@ public class RestaurantController {
             @RequestParam(defaultValue = "10") int size
     ) {
         return ResponseEntity.ok(restaurantService.getByCategory(category, PageRequest.of(page, size)));
+    }
+
+    /** 내 가게 조회 (로그인 사용자 기준) */
+    @GetMapping("/my-restaurants")
+    public ResponseEntity<ResponseDTO<?>> getMyRestaurants(
+            @AuthenticationPrincipal CustomUserDetails user,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<RestaurantResponse> restaurants = restaurantService.findByOwnerId(user.getId(), page, size);
+
+        return ResponseEntity.ok(
+                ResponseDTO.builder()
+                        .status(200)
+                        .msg("내 가게 목록 조회 성공")
+                        .data(restaurants)
+                        .build()
+        );
     }
 }

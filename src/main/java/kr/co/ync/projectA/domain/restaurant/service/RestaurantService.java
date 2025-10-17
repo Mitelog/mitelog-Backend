@@ -10,6 +10,8 @@ import kr.co.ync.projectA.domain.restaurant.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -98,5 +100,11 @@ public class RestaurantService {
                 .stream()
                 .map(RestaurantMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    public Page<RestaurantResponse> findByOwnerId(Long ownerId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+        Page<RestaurantEntity> restaurantPage = restaurantRepository.findByOwnerId(ownerId, pageable);
+        return restaurantPage.map(RestaurantResponse::fromEntity);
     }
 }
