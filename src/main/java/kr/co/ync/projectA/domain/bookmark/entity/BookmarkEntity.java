@@ -1,12 +1,15 @@
 package kr.co.ync.projectA.domain.bookmark.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
 import kr.co.ync.projectA.domain.member.entity.MemberEntity;
 import kr.co.ync.projectA.domain.restaurant.entity.RestaurantEntity;
+import lombok.*;
 
 @Entity
-@Table(name = "tbl_bookmark")
+@Table(name = "tbl_bookmark",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_member_restaurant",
+                columnNames = {"member_id", "restaurant_id"}))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
