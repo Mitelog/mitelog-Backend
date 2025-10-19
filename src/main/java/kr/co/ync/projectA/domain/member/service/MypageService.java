@@ -38,8 +38,7 @@ public class MypageService {
 //                .reviewCount(reviewCount)
                 .visitCount(1)
 //                .visitCount(visitCount)
-                .bookmarkCount(1)
-//                .bookmarkCount(bookmarkCount)
+                .bookmarkCount(bookmarkCount)
 //                .profileImage(member.getProfileImage())
                 .followerCount(followerCount)   // ✅ 추가
                 .followingCount(followingCount)
