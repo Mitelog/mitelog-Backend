@@ -1,5 +1,6 @@
 package kr.co.ync.projectA.domain.member.service;
 
+import kr.co.ync.projectA.domain.bookmark.repository.BookmarkRepository;
 import kr.co.ync.projectA.domain.follow.reposiroty.FollowRepository;
 import kr.co.ync.projectA.domain.member.dto.request.MemberLoginRequest;
 import kr.co.ync.projectA.domain.member.dto.request.MemberRegisterRequest;
@@ -9,6 +10,9 @@ import kr.co.ync.projectA.domain.member.dto.response.MemberUpdate;
 import kr.co.ync.projectA.domain.member.entity.MemberEntity;
 import kr.co.ync.projectA.domain.member.mapper.MemberMapper;
 import kr.co.ync.projectA.domain.member.repository.MemberRepository;
+import kr.co.ync.projectA.domain.restaurant.dto.response.RestaurantResponse;
+import kr.co.ync.projectA.domain.restaurant.repository.RestaurantRepository;
+import kr.co.ync.projectA.domain.review.dto.response.ReviewResponse;
 import kr.co.ync.projectA.domain.review.repository.ReviewRepository;
 import kr.co.ync.projectA.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,6 +32,8 @@ public class MemberService {
 
     private final ReviewRepository reviewRepository;
     private final FollowRepository followRepository;
+    private final BookmarkRepository bookmarkRepository;
+    private final RestaurantRepository restaurantRepository;
 
     /**
      * ✅ 회원가입
@@ -109,5 +116,29 @@ public class MemberService {
         if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
             member.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
+    }
+
+    // ✅ 유저의 리뷰 목록
+    public List<ReviewResponse> getUserReviews(Long memberId) {
+        return reviewRepository.findByMemberId(memberId)
+                .stream()
+                .map(ReviewResponse::fromEntity)
+                .toList();
+    }
+
+    // ✅ 유저의 북마크 목록
+    public List<RestaurantResponse> getUserBookmarks(Long memberId) {
+        return bookmarkRepository.findByMemberId(memberId)
+                .stream()
+                .map(bookmark -> RestaurantResponse.fromEntity(bookmark.getRestaurant()))
+                .toList();
+    }
+
+    // ✅ 유저의 등록 가게 목록
+    public List<RestaurantResponse> getUserRestaurants(Long memberId) {
+        return restaurantRepository.findByOwnerId(memberId)
+                .stream()
+                .map(RestaurantResponse::fromEntity)
+                .toList();
     }
 }

@@ -115,5 +115,34 @@ public class MemberController {
         );
     }
 
+    // ✅ 유저 공개용 상세 정보 컨트롤러 확장
+    @GetMapping("/{id}/reviews")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<ResponseDTO<?>> getUserReviews(@PathVariable Long id) {
+        var reviews = memberService.getUserReviews(id);
+        return ResponseEntity.ok(
+                new ResponseDTO<>(200, "리뷰 목록 조회 성공", reviews)
+        );
+    }
+
+    @GetMapping("/{id}/bookmarks")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<ResponseDTO<?>> getUserBookmarks(@PathVariable Long id) {
+        var bookmarks = memberService.getUserBookmarks(id);
+        return ResponseEntity.ok(
+                new ResponseDTO<>(200, "북마크 목록 조회 성공", bookmarks)
+        );
+    }
+
+    @GetMapping("/{id}/restaurants")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<ResponseDTO<?>> getUserRestaurants(@PathVariable Long id) {
+        var restaurants = memberService.getUserRestaurants(id);
+        return ResponseEntity.ok(
+                new ResponseDTO<>(200, "등록 가게 목록 조회 성공", restaurants)
+        );
+    }
+
+
 
 }
