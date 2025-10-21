@@ -77,6 +77,7 @@ public class JwtProvider {
                 .add(Header.JWT_TYPE, JwtType.ACCESS)
                 .and()
                 .subject(email)
+                .claim("memberId", member.getId())
                 // ✅ 여기서 role 추가
                 .claim("role", member.getRole().name())
                 .issuedAt(new Date())
