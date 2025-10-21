@@ -1,5 +1,6 @@
 package kr.co.ync.projectA.domain.restaurant.repository;
 
+import kr.co.ync.projectA.domain.member.entity.MemberEntity;
 import kr.co.ync.projectA.domain.restaurant.entity.RestaurantEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import java.util.Optional;
 public interface RestaurantRepository extends JpaRepository<RestaurantEntity, Long> {
 
     /* ================= 일반 사용자용 ================= */
+    int countByOwner(MemberEntity owner);
     
     // 레스토랑 페이징 기능
     Page<RestaurantEntity> findByOwnerId(Long ownerId, Pageable pageable);
