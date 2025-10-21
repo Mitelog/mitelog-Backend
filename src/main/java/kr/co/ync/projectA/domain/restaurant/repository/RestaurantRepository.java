@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RestaurantRepository extends JpaRepository<RestaurantEntity, Long> {
@@ -55,4 +56,7 @@ public interface RestaurantRepository extends JpaRepository<RestaurantEntity, Lo
     // 🔍 ID 정확히 검색 (페이징 구조 유지)
     @Query("SELECT r FROM RestaurantEntity r WHERE r.id = :id")
     Page<RestaurantEntity> findByIdExact(@Param("id") Long id, Pageable pageable);
+
+    List<RestaurantEntity> findByOwnerId(Long ownerId);
+
 }
