@@ -15,6 +15,7 @@ public class RestaurantResponse {
     private Long id;
     private Long ownerId;
     private String ownerEmail;
+    private String ownerName;
     private String name;
     private String address;
     private String area;
@@ -29,6 +30,7 @@ public class RestaurantResponse {
                 .id(entity.getId())
                 .ownerId(entity.getOwner().getId())
                 .ownerEmail(entity.getOwner().getEmail())
+                .ownerName(entity.getOwner().getName())
                 .name(entity.getName())
                 .address(entity.getAddress())
                 .area(entity.getArea())
