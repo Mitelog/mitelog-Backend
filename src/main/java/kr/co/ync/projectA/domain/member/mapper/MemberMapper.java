@@ -3,6 +3,7 @@ package kr.co.ync.projectA.domain.member.mapper;
 import kr.co.ync.projectA.domain.member.dto.request.MemberRegisterRequest;
 import kr.co.ync.projectA.domain.member.dto.response.MemberResponse;
 import kr.co.ync.projectA.domain.member.entity.MemberEntity;
+import kr.co.ync.projectA.domain.member.entity.enums.MemberRole;
 
 public class MemberMapper {
 
@@ -23,7 +24,7 @@ public class MemberMapper {
                 .email(e.getEmail())
                 .name(e.getName())
                 .phone(e.getPhone())
-                .role(e.getRole())
+                .role(MemberRole.valueOf(e.getRole() != null ? e.getRole().name() : "USER"))
                 .build();
     }
 }

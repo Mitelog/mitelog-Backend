@@ -1,12 +1,17 @@
 package kr.co.ync.projectA.domain.member.controller;
 
 import jakarta.validation.Valid;
+import kr.co.ync.projectA.domain.bookmark.repository.BookmarkRepository;
+import kr.co.ync.projectA.domain.bookmark.service.BookmarkService;
 import kr.co.ync.projectA.domain.member.dto.request.MemberLoginRequest;
 import kr.co.ync.projectA.domain.member.dto.request.MemberRegisterRequest;
 import kr.co.ync.projectA.domain.member.dto.response.MemberPublicResponse;
 import kr.co.ync.projectA.domain.member.dto.response.MemberResponse;
 import kr.co.ync.projectA.domain.member.dto.response.MemberUpdate;
+import kr.co.ync.projectA.domain.member.entity.MemberEntity;
+import kr.co.ync.projectA.domain.member.repository.MemberRepository;
 import kr.co.ync.projectA.domain.member.service.MemberService;
+import kr.co.ync.projectA.domain.restaurant.dto.response.RestaurantResponse;
 import kr.co.ync.projectA.global.common.dto.response.ResponseDTO;
 import kr.co.ync.projectA.global.jwt.JwtProvider;
 import kr.co.ync.projectA.global.security.MemberSecurity;
@@ -18,6 +23,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin(origins = {
@@ -29,9 +35,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberController {
 
+    private final MemberRepository memberRepository;
     private final MemberService memberService;
     private final MemberSecurity memberSecurity;
     private final JwtProvider jwtProvider;
+    private final BookmarkService bookmarkService;
 
     /**
      * 회원가입 (비인증 접근 허용)
@@ -71,14 +79,11 @@ public class MemberController {
             return ResponseEntity.status(401).build();
         }
 
-        Long memberId = userDetails.getMember().getId(); // ✅ 핵심 부분 수정
-        Optional<MemberResponse> result = memberService.getMember(memberId);
+        Long memberId = userDetails.getMember().getId();
+        MemberResponse response = memberService.getMember(memberId); // ✅ 바로 받기
 
-        return result.map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(response); // ✅ Optional 처리 불필요
     }
-
-
 
     @GetMapping("/{id}/public")
     public ResponseEntity<ResponseDTO<MemberPublicResponse>> getMemberProfile(
@@ -127,12 +132,18 @@ public class MemberController {
 
     @GetMapping("/{id}/bookmarks")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<ResponseDTO<?>> getUserBookmarks(@PathVariable Long id) {
-        var bookmarks = memberService.getUserBookmarks(id);
-        return ResponseEntity.ok(
-                new ResponseDTO<>(200, "북마크 목록 조회 성공", bookmarks)
-        );
+    public ResponseEntity<ResponseDTO<List<RestaurantResponse>>> getUserBookmarks(
+            @PathVariable Long id
+    ) {
+        List<RestaurantResponse> list = bookmarkService.getUserBookmarks(id);
+        return ResponseEntity.ok(new ResponseDTO<>(200, "북마크 목록 조회 성공", list));
     }
+//    public ResponseEntity<ResponseDTO<?>> getUserBookmarks(@PathVariable Long id) {
+//        var bookmarks = memberService.getUserBookmarks(id);
+//        return ResponseEntity.ok(
+//                new ResponseDTO<>(200, "북마크 목록 조회 성공", bookmarks)
+//        );
+//    }
 
     @GetMapping("/{id}/restaurants")
     @PreAuthorize("permitAll()")

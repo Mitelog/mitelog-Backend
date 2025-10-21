@@ -61,4 +61,12 @@ public class BookmarkService {
                 .averageRating(r.getAverageRating())
                 .build();
     }
+
+    // ✅ 유저의 북마크 목록 (다른 사람 포함)
+    public List<RestaurantResponse> getUserBookmarks(Long memberId) {
+        return bookmarkRepository.findByMemberId(memberId)
+                .stream()
+                .map(bookmark -> RestaurantResponse.fromEntity(bookmark.getRestaurant()))
+                .toList();
+    }
 }

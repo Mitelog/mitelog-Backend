@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,8 +36,8 @@ public class RestaurantService {
     /** ✅ 식당 등록 */
     @Transactional
     public RestaurantResponse register(RestaurantRequest request) {
-        // 현재는 JWT 인증 미적용 상태라 임시로 1L 사용
-        MemberEntity owner = memberRepository.findById(1L)
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        MemberEntity owner = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
 
         RestaurantEntity entity = RestaurantMapper.toEntity(request, owner);

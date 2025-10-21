@@ -8,6 +8,7 @@ import kr.co.ync.projectA.domain.member.dto.response.MemberPublicResponse;
 import kr.co.ync.projectA.domain.member.dto.response.MemberResponse;
 import kr.co.ync.projectA.domain.member.dto.response.MemberUpdate;
 import kr.co.ync.projectA.domain.member.entity.MemberEntity;
+import kr.co.ync.projectA.domain.member.entity.enums.MemberRole;
 import kr.co.ync.projectA.domain.member.mapper.MemberMapper;
 import kr.co.ync.projectA.domain.member.repository.MemberRepository;
 import kr.co.ync.projectA.domain.restaurant.dto.response.RestaurantResponse;
@@ -82,7 +83,7 @@ public class MemberService {
      * ✅ 단일 회원 조회 (id 기반)
      * Response : MemberResponse
      */
-    public Optional<MemberResponse> getMember(Long id) {
+    public Optional<MemberResponse> findBasicMember(Long id) {
         return memberRepository.findById(id)
                 .map(MemberMapper::toResponse);
     }
@@ -94,16 +95,18 @@ public class MemberService {
         int reviewCount = reviewRepository.countByMember(member);
         int followerCount = followRepository.countByFollowingId(targetId);
         int followingCount = followRepository.countByFollowerId(targetId);
+        int restaurantCount = restaurantRepository.countByOwner(member);
+        int bookmarkCount = bookmarkRepository.countByMember(member);
 
-        boolean isFollowed = false;
+        boolean followed = false;
 
         // ✅ 로그인한 유저(viewer)가 프로필 주인(target)을 팔로우했는지 확인
         if (viewerId != null && !viewerId.equals(targetId)) {
-            isFollowed = followRepository.existsByFollowerIdAndFollowingId(viewerId, targetId);
+            followed = followRepository.existsByFollowerIdAndFollowingId(viewerId, targetId);
         }
 
         // ✅ isFollowed 값을 포함해 응답
-        return new MemberPublicResponse(member, reviewCount, followerCount, followingCount, isFollowed);
+        return new MemberPublicResponse(member.getId(), member.getName(), reviewCount, restaurantCount, bookmarkCount, followerCount, followingCount, followed);
     }
 
     @Transactional
@@ -141,4 +144,28 @@ public class MemberService {
                 .map(RestaurantResponse::fromEntity)
                 .toList();
     }
+
+    public MemberResponse getMember(Long memberId) {
+        MemberEntity member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException("회원이 존재하지 않습니다."));
+
+        int reviewCount = reviewRepository.countByMember(member);
+        int bookmarkCount = bookmarkRepository.countByMember(member);
+        int restaurantCount = restaurantRepository.countByOwner(member);
+
+        return MemberResponse.builder()
+                .id(member.getId())
+                .name(member.getName())
+                .email(member.getEmail())
+                .phone(member.getPhone())
+                .role(member.getRole() != null ? member.getRole() : MemberRole.USER)
+                .reviewCount(reviewCount)
+                .bookmarkCount(bookmarkCount)
+                .restaurantCount(restaurantCount)
+                .followerCount(followRepository.countByFollowingId(member.getId()))
+                .followingCount(followRepository.countByFollowerId(member.getId()))
+                .build();
+    }
+
+
 }
