@@ -1,5 +1,6 @@
 package kr.co.ync.projectA.domain.review.dto.response;
 
+import kr.co.ync.projectA.domain.review.entity.ReviewEntity;
 import lombok.*;
 import java.time.LocalDateTime;
 
@@ -21,4 +22,13 @@ public class ReviewResponse {
     private Long likeNum;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public static ReviewResponse fromEntity(ReviewEntity entity) {
+        return ReviewResponse.builder()
+                .id(entity.getId())
+                .title(entity.getTitle())
+                .content(entity.getContent())
+                .rating(entity.getRating())
+                .build();
+    }
 }
