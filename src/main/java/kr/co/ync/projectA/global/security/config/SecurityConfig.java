@@ -45,6 +45,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize ->
                         authorize
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                                 // ✅ 1. OPTIONS 허용 (CORS preflight)
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
@@ -59,7 +60,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll()
 
-                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
 
                                 // ✅ 4. 인증 필요한 영역
                                 .requestMatchers("/api/members/me").authenticated()

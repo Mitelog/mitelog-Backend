@@ -1,5 +1,6 @@
 package kr.co.ync.projectA.domain.review.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import kr.co.ync.projectA.domain.member.entity.MemberEntity;
@@ -23,11 +24,13 @@ public class ReviewEntity extends BaseTimeEntity {
     /* 리뷰 대상 가게 */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
+    @JsonBackReference
     private RestaurantEntity restaurant;
 
     /* 리뷰 작성자 */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
+    @JsonBackReference
     private MemberEntity member;
 
     /* 평점 (1~5 정수) */
