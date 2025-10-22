@@ -4,6 +4,8 @@ import kr.co.ync.projectA.domain.member.entity.MemberEntity;
 import kr.co.ync.projectA.domain.member.repository.MemberRepository;
 import kr.co.ync.projectA.domain.restaurant.entity.RestaurantEntity;
 import kr.co.ync.projectA.domain.restaurant.repository.RestaurantRepository;
+import kr.co.ync.projectA.domain.review.dto.request.ReviewUpdateRequest;
+import kr.co.ync.projectA.domain.review.dto.response.ReviewResponse;
 import kr.co.ync.projectA.domain.review.entity.ReviewEntity;
 import kr.co.ync.projectA.domain.review.repository.ReviewRepository;
 import kr.co.ync.projectA.global.common.dto.response.ResponseDTO;
@@ -197,6 +199,7 @@ public class AdminController {
     /* ======================= 리뷰 관리 ======================= */
 
     // 🔍 리뷰 목록 (페이징 + 항목별 검색)
+    // 🔍 리뷰 목록 (페이징 + 항목별 검색)
     @GetMapping("/reviews")
     public ResponseEntity<?> getReviews(
             @RequestParam(defaultValue = "0") int page,
@@ -226,29 +229,37 @@ public class AdminController {
             reviewPage = reviewRepository.findAll(pageable);
         }
 
+        // ✅ Entity → DTO 변환 (여기서 핵심!)
+        Page<ReviewResponse> dtoPage = reviewPage.map(ReviewResponse::fromEntity);
+
         return ResponseEntity.ok(ResponseDTO.builder()
                 .status(200)
                 .msg("리뷰 목록 조회 성공")
                 .data(Map.of(
-                        "content", reviewPage.getContent(),
-                        "totalPages", reviewPage.getTotalPages(),
-                        "totalElements", reviewPage.getTotalElements()
+                        "content", dtoPage.getContent(),
+                        "totalPages", dtoPage.getTotalPages(),
+                        "totalElements", dtoPage.getTotalElements()
                 ))
                 .build());
     }
 
+
     // ✏️ 리뷰 수정
     @PutMapping("/reviews/{id}")
-    public ResponseEntity<?> updateReview(@PathVariable Long id, @RequestBody ReviewEntity updated) {
+    public ResponseEntity<?> updateReview(@PathVariable Long id, @RequestBody ReviewUpdateRequest updated) {
         return reviewRepository.findById(id)
                 .map(rv -> {
                     rv.setTitle(updated.getTitle());
                     rv.setContent(updated.getContent());
                     reviewRepository.save(rv);
+
+                    // ✅ 수정 후 DTO로 변환
+                    ReviewResponse dto = ReviewResponse.fromEntity(rv);
+
                     return ResponseEntity.ok(ResponseDTO.builder()
                             .status(200)
                             .msg("리뷰 수정 성공")
-                            .data(rv)
+                            .data(dto)
                             .build());
                 })
                 .orElse(ResponseEntity.status(404)
