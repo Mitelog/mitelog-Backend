@@ -32,8 +32,8 @@ public class JwtProvider {
 
     /**
      * 📌 토큰을 파싱해서 Jws<Claims>로 반환.
-     *    - 여기서 서명 검증(비밀키 일치) & 구조검증을 같이 수행한다.
-     *    - 다양한 예외를 명시적으로 캐치해 주면 디버깅/로깅에 유리.
+     * - 여기서 서명 검증(비밀키 일치) & 구조검증을 같이 수행한다.
+     * - 다양한 예외를 명시적으로 캐치해 주면 디버깅/로깅에 유리.
      */
     public Jws<Claims> getClaims(String token) {
         try {
@@ -62,8 +62,8 @@ public class JwtProvider {
 
     /**
      * 📌 Access 토큰 생성
-     *    - subject(sub)에 "이메일"을 넣음(= 인증 식별자)
-     *    - 필요하다면 .claim("mid", memberId) 처럼 최소 클레임을 추가하는 것도 가능
+     * - subject(sub)에 "이메일"을 넣음(= 인증 식별자)
+     * - 필요하다면 .claim("mid", memberId) 처럼 최소 클레임을 추가하는 것도 가능
      */
     public String generateAccessToken(String email) {
         // DB에서 회원 정보 조회
@@ -73,12 +73,11 @@ public class JwtProvider {
         return Jwts.builder()
                 .header()
                 .add("typ", "JWT")
-                .add("token_type", JwtType.ACCESS)
-                .add(Header.JWT_TYPE, JwtType.ACCESS)
+                .add("token_type", JwtType.ACCESS.toString())
+                .add(Header.JWT_TYPE, JwtType.ACCESS.toString())
                 .and()
                 .subject(email)
                 .claim("memberId", member.getId())
-                // ✅ 여기서 role 추가
                 .claim("role", member.getRole().name())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtProperties.getExpiration()))
@@ -88,12 +87,12 @@ public class JwtProvider {
 
     /**
      * 📌 Refresh 토큰 생성
-     *    - 보통 Access보다 만료시간이 길고, 재발급 용도로만 사용
+     * - 보통 Access보다 만료시간이 길고, 재발급 용도로만 사용
      */
     public String generateRefreshToken(String email) {
         return Jwts.builder()
                 .header()
-                .add(Header.JWT_TYPE, JwtType.REFRESH)
+                .add(Header.JWT_TYPE, JwtType.REFRESH.toString())
                 .and()
                 .subject(email)
                 .issuedAt(new Date())
@@ -104,8 +103,8 @@ public class JwtProvider {
 
     /**
      * 📌 서명용 SecretKey 생성
-     *    - HS256 기준으로 충분히 긴 base64 문자열을 권장
-     *    - application.yml: jwt.secretKey: "base64-encoded-very-long-secret..."
+     * - HS256 기준으로 충분히 긴 base64 문자열을 권장
+     * - application.yml: jwt.secretKey: "base64-encoded-very-long-secret..."
      */
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(
@@ -115,21 +114,27 @@ public class JwtProvider {
 
     /**
      * 📌 토큰 헤더에 저장한 타입(ACCESS/REFRESH) 일치 확인
-     *    - 재발급/인가 과정에서 실수로 잘못된 토큰을 쓰는 걸 방지
+     * - 재발급/인가 과정에서 실수로 잘못된 토큰을 쓰는 걸 방지
      */
     public boolean isWrongType(final Jws<Claims> claims, final JwtType jwtType) {
-        return !(claims.getHeader().get(Header.JWT_TYPE).equals(jwtType.toString()));
+        Object type = claims.getHeader().get(Header.JWT_TYPE);
+
+        if (type == null) {
+            return true;
+        }
+
+        return !type.toString().equals(jwtType.toString());
     }
 
     /**
      * 📌 토큰을 Authentication(스프링 시큐리티 표준 인증객체)로 변환
-     *    절차:
-     *    1) 토큰 파싱 → Claims
-     *    2) 타입 검증 (ACCESS 여야 한다)
-     *    3) subject(=email) 추출
-     *    4) DB에서 사용자 조회(엔티티 기준) — ❗ DTO로 매핑하지 않음
-     *    5) CustomUserDetails 생성
-     *    6) UsernamePasswordAuthenticationToken으로 감싸 반환(SecurityContext에 들어갈 타입)
+     * 절차:
+     * 1) 토큰 파싱 → Claims
+     * 2) 타입 검증 (ACCESS 여야 한다)
+     * 3) subject(=email) 추출
+     * 4) DB에서 사용자 조회(엔티티 기준) — ❗ DTO로 매핑하지 않음
+     * 5) CustomUserDetails 생성
+     * 6) UsernamePasswordAuthenticationToken으로 감싸 반환(SecurityContext에 들어갈 타입)
      */
     public Authentication getAuthentication(String token) {
         Jws<Claims> claims = getClaims(token);
@@ -155,8 +160,8 @@ public class JwtProvider {
 
     /**
      * 📌 JWT 유효성 검증
-     *  - 토큰이 만료되었거나 서명이 올바르지 않으면 false 반환
-     *  - 유효할 경우 true 반환
+     * - 토큰이 만료되었거나 서명이 올바르지 않으면 false 반환
+     * - 유효할 경우 true 반환
      */
     public boolean validateToken(String token) {
         try {
@@ -184,8 +189,8 @@ public class JwtProvider {
 
     /**
      * 📌 Authorization 헤더에서 회원 ID를 추출
-     *  - "Bearer " 접두사 제거 후 실제 토큰 파싱
-     *  - 토큰에서 이메일(subject) 꺼내고 DB에서 memberId 반환
+     * - "Bearer " 접두사 제거 후 실제 토큰 파싱
+     * - 토큰에서 이메일(subject) 꺼내고 DB에서 memberId 반환
      */
     public Long getMemberIdFromToken(String token) {
         if (token == null || !token.startsWith("Bearer ")) {
@@ -205,8 +210,8 @@ public class JwtProvider {
 
     /**
      * 📌 JWT 토큰으로부터 회원 ID를 추출
-     *  - Authorization 헤더 형식 ("Bearer ") 포함 시 자동 제거
-     *  - subject(email)을 꺼내서 DB 조회 후 memberId 반환
+     * - Authorization 헤더 형식 ("Bearer ") 포함 시 자동 제거
+     * - subject(email)을 꺼내서 DB 조회 후 memberId 반환
      */
     public Long getUserIdFromToken(String token) {
         if (token == null || token.isBlank()) {
