@@ -5,6 +5,8 @@ import io.jsonwebtoken.Jws;
 import kr.co.ync.projectA.domain.auth.dto.request.AuthenticationRequest;
 import kr.co.ync.projectA.domain.auth.dto.response.JsonWebTokenResponse;
 import kr.co.ync.projectA.domain.member.entity.MemberEntity;
+import kr.co.ync.projectA.domain.member.exception.MemberNotFoundException;
+import kr.co.ync.projectA.domain.member.repository.MemberRepository;
 import kr.co.ync.projectA.global.jwt.JwtProvider;
 import kr.co.ync.projectA.global.jwt.enums.JwtType;
 import kr.co.ync.projectA.global.jwt.exception.TokenTypeException;
@@ -21,6 +23,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
+    private final MemberRepository memberRepository; // refresh 시 회원 조회용
 
     @Override
     public JsonWebTokenResponse auth(AuthenticationRequest request) {
@@ -42,27 +45,30 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public JsonWebTokenResponse refresh(String token) {
+        // 1) JWT 파싱 및 기본 검증
         Jws<Claims> claims = jwtProvider.getClaims(token);
 
+        // 2) 토큰 타입 검사
         if (jwtProvider.isWrongType(claims, JwtType.REFRESH)) {
             throw TokenTypeException.EXCEPTION;
         }
 
+        // 3) 이메일(subject) 추출
         String email = claims.getPayload().getSubject();
 
-        // ✅ role도 새로 반환 (프론트에서 재로그인 없이 유지 가능)
+        // 4) 이메일로 회원 정보 조회
+        MemberEntity member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> MemberNotFoundException.EXCEPTION);
+
+        // 5) 새 토큰 발급
         String newAccessToken = jwtProvider.generateAccessToken(email);
         String newRefreshToken = jwtProvider.generateRefreshToken(email);
-
-        MemberEntity member = ((CustomUserDetails)
-                authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(email, null)
-                ).getPrincipal()).getMember();
 
         return JsonWebTokenResponse.builder()
                 .accessToken(newAccessToken)
                 .refreshToken(newRefreshToken)
                 .role(member.getRole().name())
+                .memberId(member.getId())
                 .build();
     }
 }
