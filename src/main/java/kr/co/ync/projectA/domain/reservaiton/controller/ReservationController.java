@@ -27,7 +27,11 @@ public class ReservationController {
             @AuthenticationPrincipal CustomUserDetails user,
             @RequestBody ReservationRequest.Create request
     ) {
-        Long memberId = user.getId(); // 🔥 토큰에서 추출
+        if (user == null) {
+            throw new IllegalStateException("인증 정보가 없습니다.");
+        }
+
+        Long memberId = user.getId();
 
         ReservationResponse response =
                 reservationService.createReservation(memberId, request);
@@ -38,16 +42,19 @@ public class ReservationController {
     }
 
 
+
     /**
      * 예약 삭제 (취소)
      */
     @DeleteMapping("/{reservationId}")
     public ResponseEntity<Void> deleteReservation(
+            @AuthenticationPrincipal CustomUserDetails user,
             @PathVariable Long reservationId
     ) {
-        reservationService.deleteReservation(reservationId);
+        reservationService.deleteReservation(user.getId(), reservationId);
         return ResponseEntity.noContent().build();
     }
+
 
     /**
      * 가게 기준 예약 조회
@@ -65,13 +72,15 @@ public class ReservationController {
      * 고객 기준 예약 조회
      * 예: /api/reservations/member/5
      */
-    @GetMapping("/member/{memberId}")
-    public ResponseEntity<List<ReservationResponse>> getReservationsByMember(
-            @PathVariable Long memberId
+    @GetMapping("/me")
+    public ResponseEntity<List<ReservationResponse>> getMyReservations(
+            @AuthenticationPrincipal CustomUserDetails user
     ) {
-        List<ReservationResponse> result = reservationService.getReservationsByMember(memberId);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(
+                reservationService.getReservationsByMember(user.getId())
+        );
     }
+
 
     /**
      * (선택) 단건 예약 조회
