@@ -39,7 +39,7 @@ public class RestaurantQueryRepositoryImpl implements RestaurantQueryRepository 
                 .select(r.id)
                 .from(r)
                 // ✅ detail 조인 (필터 조건이 있을 수 있으므로 leftJoin)
-                .leftJoin(d).on(d.restaurantId.id.eq(r.id))
+                .leftJoin(d.restaurantId, r)
                 // ✅ 카테고리 조인(드롭다운 필터)
                 .leftJoin(rcm).on(rcm.restaurant.id.eq(r.id))
                 .leftJoin(c).on(rcm.category.id.eq(c.id))
@@ -80,7 +80,7 @@ public class RestaurantQueryRepositoryImpl implements RestaurantQueryRepository 
         Long total = queryFactory
                 .select(r.id.countDistinct())
                 .from(r)
-                .leftJoin(d).on(d.restaurantId.id.eq(r.id))
+                .leftJoin(d.restaurantId, r)
                 .leftJoin(rcm).on(rcm.restaurant.id.eq(r.id))
                 .leftJoin(c).on(rcm.category.id.eq(c.id))
                 .where(
