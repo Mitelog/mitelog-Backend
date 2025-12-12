@@ -9,6 +9,7 @@ import kr.co.ync.projectA.domain.reservaiton.repository.ReservationRepository;
 import kr.co.ync.projectA.domain.restaurant.entity.RestaurantEntity;
 import kr.co.ync.projectA.domain.restaurant.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,11 +55,17 @@ public class ReservationService {
     /**
      * 예약 삭제
      */
-    public void deleteReservation(Long reservationId) {
+    public void deleteReservation(Long memberId, Long reservationId) {
         ReservationEntity entity = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 예약입니다. id=" + reservationId));
+                .orElseThrow();
+
+        if (!entity.getMember().getId().equals(memberId)) {
+            throw new AccessDeniedException("본인의 예약만 삭제할 수 있습니다.");
+        }
+
         reservationRepository.delete(entity);
     }
+
 
     /**
      * 단건 조회
