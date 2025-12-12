@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import kr.co.ync.projectA.domain.restaurant.entity.RestaurantEntity;
+import kr.co.ync.projectA.domain.restaurantDetail.dto.response.RestaurantDetailResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,6 +25,8 @@ public class RestaurantResponse {
     private Double averageRating;
     private List<String> categoryNames;
     private int reviewCount;
+
+    private RestaurantDetailResponse detail;
 
     public static RestaurantResponse fromEntity(RestaurantEntity entity) {
         return RestaurantResponse.builder()
