@@ -3,8 +3,10 @@ package kr.co.ync.projectA.domain.reservaiton.controller;
 import kr.co.ync.projectA.domain.reservaiton.dto.request.ReservationRequest;
 import kr.co.ync.projectA.domain.reservaiton.dto.response.ReservationResponse;
 import kr.co.ync.projectA.domain.reservaiton.service.ReservationService;
+import kr.co.ync.projectA.global.security.auth.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -22,15 +24,19 @@ public class ReservationController {
      */
     @PostMapping
     public ResponseEntity<ReservationResponse> createReservation(
+            @AuthenticationPrincipal CustomUserDetails user,
             @RequestBody ReservationRequest.Create request
     ) {
-        ReservationResponse response = reservationService.createReservation(request);
+        Long memberId = user.getId(); // 🔥 토큰에서 추출
 
-        // Location 헤더에 생성된 리소스 경로 넣어주는 패턴
+        ReservationResponse response =
+                reservationService.createReservation(memberId, request);
+
         return ResponseEntity
                 .created(URI.create("/api/reservations/" + response.id()))
                 .body(response);
     }
+
 
     /**
      * 예약 삭제 (취소)
