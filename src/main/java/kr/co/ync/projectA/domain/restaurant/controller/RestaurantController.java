@@ -1,6 +1,7 @@
 package kr.co.ync.projectA.domain.restaurant.controller;
 
 import kr.co.ync.projectA.domain.restaurant.dto.request.RestaurantRequest;
+import kr.co.ync.projectA.domain.restaurant.dto.request.RestaurantSearchRequest;
 import kr.co.ync.projectA.domain.restaurant.dto.response.RestaurantResponse;
 import kr.co.ync.projectA.domain.restaurant.service.RestaurantService;
 import kr.co.ync.projectA.global.common.dto.response.ResponseDTO;
@@ -25,7 +26,7 @@ public class RestaurantController {
     /**
      * 등록
      */
-    @PreAuthorize("permitAll()")
+    @PreAuthorize("isAuthenticated()")
     @PostMapping
     public ResponseEntity<RestaurantResponse> register(@RequestBody RestaurantRequest request) {
         return ResponseEntity.ok(restaurantService.register(request));
@@ -36,10 +37,11 @@ public class RestaurantController {
      */
     @GetMapping
     public ResponseEntity<Page<RestaurantResponse>> getAll(
+            @ModelAttribute RestaurantSearchRequest cond,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        return ResponseEntity.ok(restaurantService.getAll(PageRequest.of(page, size)));
+        return ResponseEntity.ok(restaurantService.getAll(cond, PageRequest.of(page, size)));
     }
 
     /**
