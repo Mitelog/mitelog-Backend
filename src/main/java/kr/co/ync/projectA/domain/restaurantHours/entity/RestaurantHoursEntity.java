@@ -36,4 +36,13 @@ public class RestaurantHoursEntity {
     @Column(nullable = false)
     private Boolean isOpen;
 
+    public void updateHours(LocalTime openTime, LocalTime closeTime, Boolean isOpen) {
+        this.openTime = openTime;
+        this.closeTime = closeTime;
+        this.isOpen = isOpen;
+    }
+
+    public void updateActive(Boolean isOpen) {
+        this.isOpen = isOpen;
+    }
 }
