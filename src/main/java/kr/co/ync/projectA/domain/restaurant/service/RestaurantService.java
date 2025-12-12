@@ -7,6 +7,7 @@ import kr.co.ync.projectA.domain.restaurant.dto.request.RestaurantSearchRequest;
 import kr.co.ync.projectA.domain.restaurant.dto.response.RestaurantResponse;
 import kr.co.ync.projectA.domain.restaurant.entity.RestaurantEntity;
 import kr.co.ync.projectA.domain.restaurant.mapper.RestaurantMapper;
+import kr.co.ync.projectA.domain.restaurant.repository.RestaurantQueryRepository;
 import kr.co.ync.projectA.domain.restaurant.repository.RestaurantRepository;
 import kr.co.ync.projectA.domain.review.repository.ReviewRepository;
 import kr.co.ync.projectA.domain.restaurantDetail.dto.response.RestaurantDetailResponse;
@@ -34,6 +35,8 @@ public class RestaurantService {
 
     // ✅ 추가: Detail 서비스 주입
     private final RestaurantDetailService restaurantDetailService;
+
+    private final RestaurantQueryRepository restaurantQueryRepository;
 
     /**
      * ✅ 식당 등록
