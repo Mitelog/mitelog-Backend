@@ -24,7 +24,7 @@ public class QRestaurantHoursEntity extends EntityPathBase<RestaurantHoursEntity
 
     public final TimePath<java.time.LocalTime> closeTime = createTime("closeTime", java.time.LocalTime.class);
 
-    public final StringPath dayOfWeek = createString("dayOfWeek");
+    public final EnumPath<kr.co.ync.projectA.domain.restaurantHours.enums.DayOfWeekType> dayOfWeek = createEnum("dayOfWeek", kr.co.ync.projectA.domain.restaurantHours.enums.DayOfWeekType.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -32,7 +32,7 @@ public class QRestaurantHoursEntity extends EntityPathBase<RestaurantHoursEntity
 
     public final TimePath<java.time.LocalTime> openTime = createTime("openTime", java.time.LocalTime.class);
 
-    public final kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity restaurantId;
+    public final kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity restaurant;
 
     public QRestaurantHoursEntity(String variable) {
         this(RestaurantHoursEntity.class, forVariable(variable), INITS);
@@ -52,7 +52,7 @@ public class QRestaurantHoursEntity extends EntityPathBase<RestaurantHoursEntity
 
     public QRestaurantHoursEntity(Class<? extends RestaurantHoursEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.restaurantId = inits.isInitialized("restaurantId") ? new kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity(forProperty("restaurantId"), inits.get("restaurantId")) : null;
+        this.restaurant = inits.isInitialized("restaurant") ? new kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity(forProperty("restaurant"), inits.get("restaurant")) : null;
     }
 
 }
