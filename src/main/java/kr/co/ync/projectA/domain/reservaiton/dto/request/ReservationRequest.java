@@ -11,8 +11,7 @@ public class ReservationRequest {
      */
     public record Create(
             Long restaurantId,
-            Long memberId,
             LocalDateTime visit,
             Long numPeople
-    ) { }
+    ) {}
 }

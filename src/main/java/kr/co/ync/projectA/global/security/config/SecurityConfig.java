@@ -65,6 +65,8 @@ public class SecurityConfig {
                                 // ✅ 4. 인증 필요한 영역
                                 .requestMatchers("/api/members/me").authenticated()
                                 .requestMatchers("/api/mypage/**").authenticated()
+                                .requestMatchers("/api/reservations/**").authenticated()
+
 
                                 // ✅ 5. 그 외 전부 인증 필요
                                 .anyRequest().authenticated()

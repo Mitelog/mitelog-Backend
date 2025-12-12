@@ -26,13 +26,17 @@ public class ReservationService {
     /**
      * 예약 생성
      */
-    public ReservationResponse createReservation(ReservationRequest.Create request) {
+    public ReservationResponse createReservation(Long memberId, ReservationRequest.Create request) {
 
         RestaurantEntity restaurant = restaurantRepository.findById(request.restaurantId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 식당입니다. id=" + request.restaurantId()));
+                .orElseThrow(() ->
+                        new IllegalArgumentException("존재하지 않는 식당입니다. id=" + request.restaurantId())
+                );
 
-        MemberEntity member = memberRepository.findById(request.memberId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다. id=" + request.memberId()));
+        MemberEntity member = memberRepository.findById(memberId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException("존재하지 않는 회원입니다. id=" + memberId)
+                );
 
         ReservationEntity reservation = ReservationEntity.builder()
                 .restaurant(restaurant)
@@ -45,6 +49,7 @@ public class ReservationService {
 
         return toResponse(saved);
     }
+
 
     /**
      * 예약 삭제
