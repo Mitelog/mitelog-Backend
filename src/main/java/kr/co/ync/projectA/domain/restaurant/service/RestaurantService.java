@@ -9,6 +9,7 @@ import kr.co.ync.projectA.domain.restaurant.entity.RestaurantEntity;
 import kr.co.ync.projectA.domain.restaurant.mapper.RestaurantMapper;
 import kr.co.ync.projectA.domain.restaurant.repository.RestaurantQueryRepository;
 import kr.co.ync.projectA.domain.restaurant.repository.RestaurantRepository;
+import kr.co.ync.projectA.domain.restaurantDetail.repository.RestaurantDetailRepository;
 import kr.co.ync.projectA.domain.review.repository.ReviewRepository;
 import kr.co.ync.projectA.domain.restaurantDetail.dto.response.RestaurantDetailResponse;
 import kr.co.ync.projectA.domain.restaurantDetail.service.RestaurantDetailService;
@@ -35,7 +36,7 @@ public class RestaurantService {
 
     // ✅ 추가: Detail 서비스 주입
     private final RestaurantDetailService restaurantDetailService;
-
+    private final RestaurantDetailRepository restaurantDetailRepository;
     private final RestaurantQueryRepository restaurantQueryRepository;
 
     /**
@@ -183,6 +184,11 @@ public class RestaurantService {
      */
     @Transactional
     public void delete(Long id) {
+        // ✅ 1) 자식(restaurant_detail) 먼저 삭제
+        // - 있든 없든 deleteByRestaurantId는 호출해도 OK (0건 삭제 가능)
+        restaurantDetailRepository.deleteByRestaurantId(id);
+
+        // ✅ 2) 부모(restaurant) 삭제
         restaurantRepository.deleteById(id);
     }
 
