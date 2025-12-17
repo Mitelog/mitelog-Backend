@@ -128,4 +128,27 @@ public class RestaurantDetailService {
                 e.getPaymentMethods()
         );
     }
+
+    @Transactional
+    public void upsertDetail(RestaurantEntity restaurant, RestaurantDetailUpsertRequest req) {
+        if (req == null) return;
+
+        RestaurantDetailEntity detail = restaurantDetailRepository.findByRestaurant_Id(restaurant.getId())
+                .orElseGet(() -> RestaurantDetailEntity.createDefault(restaurant));
+
+        detail.update(
+                req.description(),
+                req.privateRoom(),
+                req.smoking(),
+                req.unlimitDrink(),
+                req.unlimitFood(),
+                req.parkingArea(),
+                req.seatCount(),
+                req.averagePrice(),
+                req.paymentMethods()
+        );
+
+        restaurantDetailRepository.save(detail);
+    }
+
 }
