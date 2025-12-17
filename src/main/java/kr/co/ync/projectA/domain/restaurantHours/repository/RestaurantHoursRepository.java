@@ -11,4 +11,6 @@ public interface RestaurantHoursRepository extends JpaRepository<RestaurantHours
     List<RestaurantHoursEntity> findByRestaurant_Id(Long restaurantId);
 
     Optional<RestaurantHoursEntity> findByRestaurant_IdAndDayOfWeek(Long restaurantId, DayOfWeekType dayOfWeek);
+
+    void deleteByRestaurant_Id(Long restaurantId);
 }
