@@ -24,7 +24,5 @@ public interface RestaurantDetailRepository extends JpaRepository<RestaurantDeta
      * ✅ 식당 삭제 시 detail도 같이 정리해야 하는 케이스가 있으면 사용
      * (DB FK on delete cascade를 안 쓰는 경우)
      */
-    void deleteByRestaurantId(Long restaurantId);
-
-    boolean existsByRestaurantId(Long restaurantId);
+    void deleteByRestaurant_Id(Long restaurantId);
 }
