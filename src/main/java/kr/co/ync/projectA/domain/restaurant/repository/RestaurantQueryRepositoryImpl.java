@@ -4,6 +4,7 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.ync.projectA.domain.category.entity.QCategoryEntity;
 import kr.co.ync.projectA.domain.restaurant.dto.request.RestaurantSearchRequest;
@@ -11,8 +12,8 @@ import kr.co.ync.projectA.domain.restaurant.dto.response.RestaurantResponse;
 import kr.co.ync.projectA.domain.restaurant.entity.QRestaurantEntity;
 import kr.co.ync.projectA.domain.restaurant.mapper.RestaurantMapper;
 import kr.co.ync.projectA.domain.restaurantCategoryMapEntity.entity.QRestaurantCategoryMapEntity;
+import kr.co.ync.projectA.domain.restaurantDetail.entity.PaymentMethod; // ✅ PaymentMethod는 detail 쪽
 import kr.co.ync.projectA.domain.restaurantDetail.entity.QRestaurantDetailEntity;
-import kr.co.ync.projectA.domain.restaurantDetail.entity.PaymentMethod; // ✅ 실제 패키지 경로 확인해서 수정
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Repository;
@@ -36,8 +37,6 @@ public class RestaurantQueryRepositoryImpl implements RestaurantQueryRepository 
 
         /* =========================================================
          * 1) IDs 페이징 쿼리
-         * - JOIN이 많아지면 row가 늘어나서 페이징이 깨질 수 있음
-         * - 그래서 "ID만 distinct로 뽑고" offset/limit 적용하는 방식이 안전함
          * ========================================================= */
         List<Long> ids = queryFactory
                 .select(r.id)
@@ -80,18 +79,16 @@ public class RestaurantQueryRepositoryImpl implements RestaurantQueryRepository 
 
         /* =========================================================
          * 2) 실제 엔티티 조회
-         * - mapper 재사용
-         * - categoryMappings/category까지 fetchJoin 해서 N+1 줄임
-         * - IDs 순서를 유지해야 페이지 정렬이 깨지지 않음
-         *   => CaseBuilder로 "ids 순서대로" orderBy
+         * - categoryMappings/category/owner fetchJoin으로 N+1 완화
+         * - ids 순서 유지(CaseBuilder)
          * ========================================================= */
         OrderSpecifier<Integer> orderByIds = buildOrderByIds(ids, r);
 
         List<RestaurantResponse> content = queryFactory
                 .selectFrom(r)
+                .leftJoin(r.owner).fetchJoin()
                 .leftJoin(r.categoryMappings, rcm).fetchJoin()
                 .leftJoin(rcm.category, c).fetchJoin()
-                .leftJoin(r.owner).fetchJoin() // ownerName/Email 등을 mapper가 필요로 하면 N+1 방지
                 .where(r.id.in(ids))
                 .distinct()
                 .orderBy(orderByIds)
@@ -102,8 +99,6 @@ public class RestaurantQueryRepositoryImpl implements RestaurantQueryRepository 
 
         /* =========================================================
          * 3) count 쿼리
-         * - totalPages 계산용
-         * - IDs 쿼리와 동일한 where 조건을 적용해야 정확함
          * ========================================================= */
         Long total = queryFactory
                 .select(r.id.countDistinct())
@@ -131,9 +126,6 @@ public class RestaurantQueryRepositoryImpl implements RestaurantQueryRepository 
 
     /* =========================================================
      * 정렬 처리
-     * - Pageable의 sort를 가능한 범위에서 반영
-     * - 프로젝트에서 실제로 쓰는 컬럼명(createDateTime 등)에 맞춰야 함
-     * - 모르면 일단 id desc로 고정해도 OK
      * ========================================================= */
     private OrderSpecifier<?>[] resolveOrderSpecifiers(Pageable pageable, QRestaurantEntity r) {
         Sort sort = pageable.getSort();
@@ -147,16 +139,15 @@ public class RestaurantQueryRepositoryImpl implements RestaurantQueryRepository 
             String prop = order.getProperty();
             Order direction = order.isAscending() ? Order.ASC : Order.DESC;
 
-            // ✅ 자주 쓰는 정렬만 매핑 (필요하면 계속 추가)
+            // ✅ 필요한 정렬만 매핑 (프로젝트 필드명에 맞춰 조정)
             switch (prop) {
                 case "id" -> list.add(new OrderSpecifier<>(direction, r.id));
                 case "name" -> list.add(new OrderSpecifier<>(direction, r.name));
                 case "area" -> list.add(new OrderSpecifier<>(direction, r.area));
                 case "averageRating" -> list.add(new OrderSpecifier<>(direction, r.averageRating));
-                // BaseTimeEntity 필드명이 createDateTime라면 아래처럼:
-                case "createDateTime" -> list.add(new OrderSpecifier<>(direction, r.createDateTime));
+                case "createDateTime" -> list.add(new OrderSpecifier<>(direction, r.createDateTime)); // BaseTimeEntity 필드명
                 default -> {
-                    // 알 수 없는 정렬 필드는 무시(안 터지게)
+                    // 알 수 없는 정렬 필드는 무시
                 }
             }
         });
@@ -168,17 +159,24 @@ public class RestaurantQueryRepositoryImpl implements RestaurantQueryRepository 
     }
 
     /**
-     * ✅ IDs 순서 보장용 OrderSpecifier
-     * - 첫 번째 쿼리(ids)는 정렬/페이징이 적용됨
-     * - 두 번째 쿼리(where in ids)는 그냥 fetch하면 DB가 임의 순서로 줌
-     * - 그래서 CaseBuilder로 ids 순서대로 정렬을 강제한다.
+     * ✅ ids 순서 유지용 orderBy (컴파일 에러 안 나는 버전)
      */
     private OrderSpecifier<Integer> buildOrderByIds(List<Long> ids, QRestaurantEntity r) {
-        CaseBuilder.Cases<Integer, Integer> cb = new CaseBuilder().when(r.id.eq(ids.get(0))).then(0);
-        for (int i = 1; i < ids.size(); i++) {
-            cb = cb.when(r.id.eq(ids.get(i))).then(i);
+
+        CaseBuilder.Cases<Integer, NumberExpression<Integer>> cases = null;
+
+        for (int i = 0; i < ids.size(); i++) {
+            if (i == 0) {
+                cases = new CaseBuilder()
+                        .when(r.id.eq(ids.get(i))).then(i);
+            } else {
+                cases = cases
+                        .when(r.id.eq(ids.get(i))).then(i);
+            }
         }
-        return cb.otherwise(ids.size()).asc();
+
+        NumberExpression<Integer> orderExpr = cases.otherwise(ids.size());
+        return orderExpr.asc();
     }
 
     /* =========================================================
@@ -212,7 +210,6 @@ public class RestaurantQueryRepositoryImpl implements RestaurantQueryRepository 
 
     /**
      * ✅ boolean 필터는 "true일 때만" 적용
-     * - false까지 조건 걸면 "false인 가게만" 찾아버림 (UX 파탄)
      */
     private BooleanExpression parkingEq(Boolean v, QRestaurantDetailEntity d) {
         if (v == null || !v) return null;
