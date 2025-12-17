@@ -4,6 +4,7 @@ import kr.co.ync.projectA.domain.member.entity.MemberEntity;
 import kr.co.ync.projectA.domain.member.repository.MemberRepository;
 import kr.co.ync.projectA.domain.restaurant.entity.RestaurantEntity;
 import kr.co.ync.projectA.domain.restaurant.repository.RestaurantRepository;
+import kr.co.ync.projectA.domain.restaurant.service.RestaurantService;
 import kr.co.ync.projectA.domain.review.dto.request.ReviewUpdateRequest;
 import kr.co.ync.projectA.domain.review.dto.response.ReviewResponse;
 import kr.co.ync.projectA.domain.review.entity.ReviewEntity;
@@ -25,6 +26,7 @@ public class AdminController {
 
     private final MemberRepository memberRepository;
     private final RestaurantRepository restaurantRepository;
+    private final RestaurantService restaurantService;
     private final ReviewRepository reviewRepository;
 
     /* ======================= 회원 관리 ======================= */
@@ -189,7 +191,7 @@ public class AdminController {
     // 🗑 식당 삭제
     @DeleteMapping("/restaurants/{id}")
     public ResponseEntity<?> deleteRestaurant(@PathVariable Long id) {
-        restaurantRepository.deleteById(id);
+        restaurantService.delete(id);
         return ResponseEntity.ok(ResponseDTO.builder()
                 .status(200)
                 .msg("식당 삭제 성공")
