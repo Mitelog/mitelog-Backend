@@ -4,6 +4,9 @@ import kr.co.ync.projectA.domain.restaurant.dto.request.RestaurantRequest;
 import kr.co.ync.projectA.domain.restaurant.dto.request.RestaurantSearchRequest;
 import kr.co.ync.projectA.domain.restaurant.dto.response.RestaurantResponse;
 import kr.co.ync.projectA.domain.restaurant.service.RestaurantService;
+import kr.co.ync.projectA.domain.restaurantDetail.dto.request.RestaurantDetailUpsertRequest;
+import kr.co.ync.projectA.domain.restaurantDetail.dto.response.RestaurantDetailResponse;
+import kr.co.ync.projectA.domain.restaurantDetail.service.RestaurantDetailService;
 import kr.co.ync.projectA.global.common.dto.response.ResponseDTO;
 import kr.co.ync.projectA.global.security.auth.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -22,19 +25,14 @@ import java.util.List;
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
+    private final RestaurantDetailService restaurantDetailService;
 
-    /**
-     * 등록
-     */
     @PreAuthorize("isAuthenticated()")
     @PostMapping
     public ResponseEntity<RestaurantResponse> register(@RequestBody RestaurantRequest request) {
         return ResponseEntity.ok(restaurantService.register(request));
     }
 
-    /**
-     * 전체 조회
-     */
     @GetMapping
     public ResponseEntity<Page<RestaurantResponse>> getAll(
             @ModelAttribute RestaurantSearchRequest cond,
@@ -44,17 +42,11 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantService.getAll(cond, PageRequest.of(page, size)));
     }
 
-    /**
-     * 상세 조회
-     */
     @GetMapping("/{id}")
     public ResponseEntity<RestaurantResponse> getById(@PathVariable Long id) {
         return ResponseEntity.ok(restaurantService.getById(id));
     }
 
-    /**
-     * 수정
-     */
     @PutMapping("/{id}")
     public ResponseEntity<RestaurantResponse> update(
             @PathVariable Long id,
@@ -63,34 +55,22 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantService.update(id, request));
     }
 
-    /**
-     * 삭제
-     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         restaurantService.delete(id);
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * 지역별 조회
-     */
     @GetMapping("/area/{area}")
     public ResponseEntity<List<RestaurantResponse>> getByArea(@PathVariable String area) {
         return ResponseEntity.ok(restaurantService.getByArea(area));
     }
 
-    /**
-     * 이름 검색
-     */
     @GetMapping("/search")
     public ResponseEntity<List<RestaurantResponse>> searchByName(@RequestParam String keyword) {
         return ResponseEntity.ok(restaurantService.searchByName(keyword));
     }
 
-    /**
-     * 카테고리별 조회
-     */
     @GetMapping("/category/{category}")
     public ResponseEntity<Page<RestaurantResponse>> getByCategory(
             @PathVariable String category,
@@ -100,9 +80,6 @@ public class RestaurantController {
         return ResponseEntity.ok(restaurantService.getByCategory(category, PageRequest.of(page, size)));
     }
 
-    /**
-     * 내 가게 조회 (로그인 사용자 기준)
-     */
     @GetMapping("/my-restaurants")
     public ResponseEntity<ResponseDTO<?>> getMyRestaurants(
             @AuthenticationPrincipal CustomUserDetails user,
@@ -120,25 +97,42 @@ public class RestaurantController {
         );
     }
 
-    /**
-     * 🥇 인기 식당 - 메인 페이지용
-     */
     @GetMapping("/popular")
     public ResponseEntity<List<RestaurantResponse>> getPopularRestaurants(
             @RequestParam(defaultValue = "5") int size
     ) {
-        List<RestaurantResponse> data = restaurantService.getPopularRestaurants(size);
-        return ResponseEntity.ok(data);
+        return ResponseEntity.ok(restaurantService.getPopularRestaurants(size));
     }
 
-    /**
-     * 🆕 신규 식당 - 메인 페이지용
-     */
     @GetMapping("/new")
     public ResponseEntity<List<RestaurantResponse>> getNewRestaurants(
             @RequestParam(defaultValue = "5") int size
     ) {
-        List<RestaurantResponse> data = restaurantService.getNewRestaurants(size);
-        return ResponseEntity.ok(data);
+        return ResponseEntity.ok(restaurantService.getNewRestaurants(size));
+    }
+
+    @GetMapping("/{id}/detail")
+    public ResponseEntity<RestaurantDetailResponse> getDetail(@PathVariable Long id) {
+        return ResponseEntity.ok(restaurantDetailService.getDetail(id));
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/{id}/detail")
+    public ResponseEntity<RestaurantDetailResponse> createDetail(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails user,
+            @RequestBody RestaurantDetailUpsertRequest request
+    ) {
+        return ResponseEntity.ok(restaurantDetailService.create(id, user.getId(), request));
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{id}/detail")
+    public ResponseEntity<RestaurantDetailResponse> upsertDetail(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails user,
+            @RequestBody RestaurantDetailUpsertRequest request
+    ) {
+        return ResponseEntity.ok(restaurantDetailService.upsert(id, user.getId(), request));
     }
 }
