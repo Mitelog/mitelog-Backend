@@ -98,7 +98,7 @@ public class RestaurantService {
             return restaurantRepository.findAll(pageable)
                     .map(RestaurantMapper::toResponse);
         }
-        
+
         return restaurantQueryRepository.search(cond, pageable);
     }
 
