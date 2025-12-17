@@ -12,6 +12,7 @@ import kr.co.ync.projectA.global.security.auth.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,11 +37,11 @@ public class RestaurantController {
     @GetMapping
     public ResponseEntity<Page<RestaurantResponse>> getAll(
             @ModelAttribute RestaurantSearchRequest cond,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            Pageable pageable
     ) {
-        return ResponseEntity.ok(restaurantService.getAll(cond, PageRequest.of(page, size)));
+        return ResponseEntity.ok(restaurantService.getAll(cond, pageable));
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<RestaurantResponse> getById(@PathVariable Long id) {

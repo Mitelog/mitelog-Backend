@@ -61,7 +61,6 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll()
 
 
-
                                 // ✅ 4. 인증 필요한 영역
                                 .requestMatchers("/api/members/me").authenticated()
                                 .requestMatchers("/api/mypage/**").authenticated()

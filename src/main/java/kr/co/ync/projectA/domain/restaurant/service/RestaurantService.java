@@ -80,7 +80,7 @@ public class RestaurantService {
     /**
      * ✅ 전체 조회
      */
-    public Page<RestaurantResponse> getAll(RestaurantSearchRequest cond, PageRequest pageRequest) {
+    public Page<RestaurantResponse> getAll(RestaurantSearchRequest cond, Pageable pageable) {
         // ✅ 조건이 하나도 없으면 기존 전체조회 로직 그대로 사용(가벼움)
         boolean noFilter =
                 (cond == null)
@@ -95,12 +95,11 @@ public class RestaurantService {
                         && cond.getUnlimitFood() == null);
 
         if (noFilter) {
-            return restaurantRepository.findAll(pageRequest)
+            return restaurantRepository.findAll(pageable)
                     .map(RestaurantMapper::toResponse);
         }
-
-        // ✅ 필터가 있으면 QueryDSL 검색으로 돌린다.
-        return restaurantQueryRepository.search(cond, pageRequest);
+        
+        return restaurantQueryRepository.search(cond, pageable);
     }
 
     private boolean isBlank(String s) {
