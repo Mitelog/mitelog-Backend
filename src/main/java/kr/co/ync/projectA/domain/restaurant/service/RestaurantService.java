@@ -204,6 +204,8 @@ public class RestaurantService {
         }
 
         List<RestaurantCategoryMapEntity> maps = categories.stream()
+                .filter(cat -> !restaurantCategoryMapRepository
+                        .existsByRestaurant_IdAndCategory_Id(restaurant.getId(), cat.getId()))
                 .map(cat -> RestaurantCategoryMapEntity.builder()
                         .restaurant(restaurant)
                         .category(cat)
