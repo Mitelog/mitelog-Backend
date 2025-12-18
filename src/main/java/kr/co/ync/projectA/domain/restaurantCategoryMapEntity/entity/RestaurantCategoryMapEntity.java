@@ -21,11 +21,11 @@ public class RestaurantCategoryMapEntity {
 
     /** ✅ 식당 FK */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id", nullable = false)
+    @JoinColumn(name = "restaurant_id", nullable = false, unique = true)
     private RestaurantEntity restaurant;
 
     /** ✅ 카테고리 FK */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id", nullable = false, unique = true)
     private CategoryEntity category;
 }
