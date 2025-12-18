@@ -9,6 +9,7 @@ import kr.co.ync.projectA.domain.restaurant.entity.RestaurantEntity;
 import kr.co.ync.projectA.domain.restaurant.repository.RestaurantRepository;
 import kr.co.ync.projectA.domain.member.entity.MemberEntity;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,4 +71,18 @@ public class MenuService {
         MenuMapper.updateEntity(menu, dto);
         return MenuMapper.toResponse(menu);
     }
+
+    @Transactional
+    public void deleteMenu(Long menuId, MemberEntity loginUser) {
+        MenuEntity menu = menuRepository.findById(menuId)
+                .orElseThrow(() -> new IllegalArgumentException("Menu not found"));
+
+        // ✅ "가게 주인만" 조건: 메뉴 -> 레스토랑 -> owner 체크
+        if (!menu.getRestaurant().getOwner().getId().equals(loginUser.getId())) {
+            throw new AccessDeniedException("Not owner");
+        }
+
+        menuRepository.delete(menu);
+    }
+
 }
