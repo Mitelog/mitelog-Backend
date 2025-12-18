@@ -1,8 +1,12 @@
 package kr.co.ync.projectA.domain.category.controller;
 
+import kr.co.ync.projectA.domain.category.dto.response.CategoryResponse;
 import kr.co.ync.projectA.domain.category.entity.CategoryEntity;
 import kr.co.ync.projectA.domain.category.repository.CategoryRepository;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,5 +26,14 @@ public class CategoryController {
     @GetMapping
     public List<CategoryEntity> getAllCategories() {
         return categoryRepository.findAll();
+    }
+
+    @GetMapping("/categories")
+    public ResponseEntity<List<CategoryResponse>> getCategories() {
+        return ResponseEntity.ok(
+                categoryRepository.findAll().stream()
+                        .map(CategoryResponse::from)
+                        .toList()
+        );
     }
 }
