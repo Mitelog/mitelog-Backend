@@ -1,5 +1,7 @@
 package kr.co.ync.projectA.domain.restaurant.service;
 
+import kr.co.ync.projectA.domain.category.entity.CategoryEntity;
+import kr.co.ync.projectA.domain.category.repository.CategoryRepository;
 import kr.co.ync.projectA.domain.member.entity.MemberEntity;
 import kr.co.ync.projectA.domain.member.repository.MemberRepository;
 import kr.co.ync.projectA.domain.restaurant.dto.request.RestaurantRequest;
@@ -9,6 +11,8 @@ import kr.co.ync.projectA.domain.restaurant.entity.RestaurantEntity;
 import kr.co.ync.projectA.domain.restaurant.mapper.RestaurantMapper;
 import kr.co.ync.projectA.domain.restaurant.repository.RestaurantQueryRepository;
 import kr.co.ync.projectA.domain.restaurant.repository.RestaurantRepository;
+import kr.co.ync.projectA.domain.restaurantCategoryMapEntity.entity.RestaurantCategoryMapEntity;
+import kr.co.ync.projectA.domain.restaurantCategoryMapEntity.repository.RestaurantCategoryMapRepository;
 import kr.co.ync.projectA.domain.restaurantDetail.repository.RestaurantDetailRepository;
 import kr.co.ync.projectA.domain.restaurantHours.repository.RestaurantHoursRepository;
 import kr.co.ync.projectA.domain.review.repository.ReviewRepository;
@@ -35,14 +39,15 @@ public class RestaurantService {
     private final MemberRepository memberRepository;
     private final ReviewRepository reviewRepository;
     private final RestaurantHoursRepository restaurantHoursRepository;
+    private final CategoryRepository categoryRepository;
+    private final RestaurantCategoryMapRepository restaurantCategoryMapRepository;
 
-    // ✅ 추가: Detail 서비스 주입
     private final RestaurantDetailService restaurantDetailService;
     private final RestaurantDetailRepository restaurantDetailRepository;
     private final RestaurantQueryRepository restaurantQueryRepository;
 
     /**
-     * ✅ 식당 등록
+     *  식당 등록
      */
     @Transactional
     public RestaurantResponse register(RestaurantRequest request) {
@@ -50,18 +55,14 @@ public class RestaurantService {
         MemberEntity owner = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
 
-        // 1) Restaurant 저장
         RestaurantEntity entity = RestaurantMapper.toEntity(request, owner);
         RestaurantEntity saved = restaurantRepository.save(entity);
 
-        // 2) ✅ RestaurantDetail upsert (없으면 생성, 있으면 수정)
-        // - request.getDetail()이 null이면 RestaurantDetailService에서 그냥 return 처리됨
+        upsertCategoryMappings(saved, request.getCategoryIds());
         restaurantDetailService.upsertDetail(saved, request.getDetail());
 
-        // 3) ✅ 응답에 detail 포함 (표시까지 바로 연결하려면 여기서도 세팅)
         RestaurantDetailResponse detail = restaurantDetailService.getDetailOrNull(saved.getId());
 
-        // 기존 mapper 결과 + detail 합치기
         RestaurantResponse base = RestaurantMapper.toResponse(saved);
         return RestaurantResponse.builder()
                 .id(base.getId())
@@ -81,10 +82,9 @@ public class RestaurantService {
     }
 
     /**
-     * ✅ 전체 조회
+     *  전체 조회
      */
     public Page<RestaurantResponse> getAll(RestaurantSearchRequest cond, Pageable pageable) {
-        // ✅ 조건이 하나도 없으면 기존 전체조회 로직 그대로 사용(가벼움)
         boolean noFilter =
                 (cond == null)
                         || (isBlank(cond.getKeyword())
@@ -110,14 +110,13 @@ public class RestaurantService {
     }
 
     /**
-     * ✅ 상세 조회
+     *  상세 조회
      */
     public RestaurantResponse getById(Long id) {
         RestaurantEntity restaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("식당을 찾을 수 없습니다."));
         int reviewCount = reviewRepository.countByRestaurantId(id);
 
-        // ✅ detail 같이 내려주기
         RestaurantDetailResponse detail = restaurantDetailService.getDetailOrNull(id);
 
         RestaurantResponse base = RestaurantMapper.toResponse(restaurant, reviewCount);
@@ -139,7 +138,7 @@ public class RestaurantService {
     }
 
     /**
-     * ✅ 수정
+     *  수정
      */
     @Transactional
     public RestaurantResponse update(Long id, RestaurantRequest request) {
@@ -157,10 +156,10 @@ public class RestaurantService {
 
         RestaurantEntity saved = restaurantRepository.save(entity);
 
-        // 2) ✅ RestaurantDetail upsert
+        upsertCategoryMappings(saved, request.getCategoryIds());
+
         restaurantDetailService.upsertDetail(saved, request.getDetail());
 
-        // 3) ✅ 응답에 detail 포함
         RestaurantDetailResponse detail = restaurantDetailService.getDetailOrNull(saved.getId());
 
         RestaurantResponse base = RestaurantMapper.toResponse(saved);
@@ -182,35 +181,54 @@ public class RestaurantService {
     }
 
     /**
-     * ✅ 삭제
+     *  삭제
      */
     @Transactional
     public void delete(Long id) {
         restaurantHoursRepository.deleteByRestaurant_Id(id);
-        // ✅ 1) 자식(restaurant_detail) 먼저 삭제
-        // - 있든 없든 deleteByRestaurantId는 호출해도 OK (0건 삭제 가능)
         restaurantDetailRepository.deleteByRestaurant_Id(id);
+        restaurantCategoryMapRepository.deleteByRestaurant_Id(id);
 
-        // ✅ 2) 부모(restaurant) 삭제
         restaurantRepository.deleteById(id);
     }
 
+    private void upsertCategoryMappings(RestaurantEntity restaurant, List<Long> categoryIds) {
+        restaurantCategoryMapRepository.deleteByRestaurant_Id(restaurant.getId());
+
+        if (categoryIds == null || categoryIds.isEmpty()) return;
+
+        List<CategoryEntity> categories = categoryRepository.findAllById(categoryIds);
+
+        if (categories.size() != categoryIds.size()) {
+            throw new RuntimeException("존재하지 않는 카테고리 ID가 포함되어 있습니다.");
+        }
+
+        List<RestaurantCategoryMapEntity> maps = categories.stream()
+                .map(cat -> RestaurantCategoryMapEntity.builder()
+                        .restaurant(restaurant)
+                        .category(cat)
+                        .build())
+                .toList();
+
+        restaurantCategoryMapRepository.saveAll(maps);
+    }
+
     /**
-     * ✅ 지역별 조회
+     *  지역별 조회
      */
     public List<RestaurantResponse> getByArea(String area) {
         return restaurantRepository.findByArea(area).stream().map(RestaurantMapper::toResponse).collect(Collectors.toList());
     }
 
     /**
-     * ✅ 카테고리별 조회
+     *  카테고리별 조회
      */
     public Page<RestaurantResponse> getByCategory(String category, PageRequest pageRequest) {
         return restaurantRepository.findByCategoryName(category, pageRequest).map(RestaurantMapper::toResponse);
     }
 
     /**
-     * ✅ 이름 검색
+     *  이름 검색
      */
     public List<RestaurantResponse> searchByName(String keyword) {
         return restaurantRepository.findByNameContaining(keyword).stream().map(RestaurantMapper::toResponse).collect(Collectors.toList());
@@ -223,7 +241,7 @@ public class RestaurantService {
     }
 
     /**
-     * 🥇 인기 식당 (평점 desc, 평점 같으면 리뷰 수 많은 순)
+     *  인기 식당 (평점 desc, 평점 같으면 리뷰 수 많은 순)
      */
     public List<RestaurantResponse> getPopularRestaurants(int limit) {
         List<RestaurantEntity> all = restaurantRepository.findAll();
@@ -242,13 +260,11 @@ public class RestaurantService {
     }
 
     /**
-     * 🆕 신규 식당 (생성일자 최신 순)
+     *  신규 식당 (생성일자 최신 순)
      */
     public List<RestaurantResponse> getNewRestaurants(int limit) {
         PageRequest pageRequest = PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "createDateTime"));
         return restaurantRepository.findAll(pageRequest).stream().map(RestaurantResponse::fromEntity).collect(Collectors.toList());
     }
 
-    // 나머지 메서드들은 일단 그대로 두고(리스트 필터는 3번에서),
-    // 필요해지면 list 응답에도 detail 포함 여부를 결정하면 됨.
 }
