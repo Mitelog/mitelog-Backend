@@ -17,10 +17,10 @@ public interface RestaurantRepository extends JpaRepository<RestaurantEntity, Lo
 
     /* ================= 일반 사용자용 ================= */
     int countByOwner(MemberEntity owner);
-    
+
     // 레스토랑 페이징 기능
     Page<RestaurantEntity> findByOwnerId(Long ownerId, Pageable pageable);
-    
+
     // 지역별 조회
     List<RestaurantEntity> findByArea(String area);
 
@@ -30,19 +30,19 @@ public interface RestaurantRepository extends JpaRepository<RestaurantEntity, Lo
     // 카테고리별 조회 (카테고리 조인)
     @Query(
             value = """
-            select distinct r
-            from RestaurantEntity r
-            join r.categoryMappings m
-            join m.category c
-            where c.name = :categoryName
-        """,
+                        select distinct r
+                        from RestaurantEntity r
+                        join r.categoryMappings m
+                        join m.category c
+                        where c.name = :categoryName
+                    """,
             countQuery = """
-            select count(distinct r)
-            from RestaurantEntity r
-            join r.categoryMappings m
-            join m.category c
-            where c.name = :categoryName
-        """
+                        select count(distinct r)
+                        from RestaurantEntity r
+                        join r.categoryMappings m
+                        join m.category c
+                        where c.name = :categoryName
+                    """
     )
     Page<RestaurantEntity> findByCategoryName(@Param("categoryName") String categoryName, Pageable pageable);
 
@@ -60,5 +60,15 @@ public interface RestaurantRepository extends JpaRepository<RestaurantEntity, Lo
     Page<RestaurantEntity> findByIdExact(@Param("id") Long id, Pageable pageable);
 
     List<RestaurantEntity> findByOwnerId(Long ownerId);
+
+    @Query("""
+            select r
+            from RestaurantEntity r
+            left join fetch r.categoryMappings m
+            left join fetch m.category
+            where r.id = :id
+            """)
+    RestaurantEntity findByIdWithCategories(@Param("id") Long id);
+
 
 }

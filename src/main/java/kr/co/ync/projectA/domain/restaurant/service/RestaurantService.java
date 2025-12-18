@@ -145,7 +145,6 @@ public class RestaurantService {
         RestaurantEntity entity = restaurantRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("식당을 찾을 수 없습니다."));
 
-        // 1) Restaurant 업데이트
         entity.update(
                 request.getName(),
                 request.getAddress(),
@@ -154,15 +153,18 @@ public class RestaurantService {
                 request.getImage()
         );
 
-        RestaurantEntity saved = restaurantRepository.save(entity);
+        // save() 굳이 안 해도 dirty checking으로 반영됨 (해도 상관없음)
+        // restaurantRepository.save(entity);
 
-        upsertCategoryMappings(saved, request.getCategoryIds());
+        upsertCategoryMappings(entity, request.getCategoryIds());
+        restaurantDetailService.upsertDetail(entity, request.getDetail());
 
-        restaurantDetailService.upsertDetail(saved, request.getDetail());
+        // ✅ 응답 만들기 전에 fetch join으로 다시 로드
+        RestaurantEntity loaded = restaurantRepository.findByIdWithCategories(id);
 
-        RestaurantDetailResponse detail = restaurantDetailService.getDetailOrNull(saved.getId());
+        RestaurantDetailResponse detail = restaurantDetailService.getDetailOrNull(id);
+        RestaurantResponse base = RestaurantMapper.toResponse(loaded);
 
-        RestaurantResponse base = RestaurantMapper.toResponse(saved);
         return RestaurantResponse.builder()
                 .id(base.getId())
                 .ownerId(base.getOwnerId())
@@ -179,6 +181,7 @@ public class RestaurantService {
                 .detail(detail)
                 .build();
     }
+
 
     /**
      *  삭제
