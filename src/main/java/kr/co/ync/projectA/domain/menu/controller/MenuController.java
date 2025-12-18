@@ -54,4 +54,17 @@ public class MenuController {
         MemberEntity loginUser = userDetails.getMember();
         return menuService.updateMenu(menuId, dto, loginUser);
     }
+
+    /**
+     * ✅ 메뉴 삭제 (가게 주인만)
+     */
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/{menuId}")
+    public void deleteMenu(
+            @PathVariable Long menuId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        MemberEntity loginUser = userDetails.getMember();
+        menuService.deleteMenu(menuId, loginUser);
+    }
 }
