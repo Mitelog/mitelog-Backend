@@ -47,7 +47,7 @@ public class RestaurantService {
     private final RestaurantQueryRepository restaurantQueryRepository;
 
     /**
-     *  식당 등록
+     * 식당 등록
      */
     @Transactional
     public RestaurantResponse register(RestaurantRequest request) {
@@ -82,7 +82,7 @@ public class RestaurantService {
     }
 
     /**
-     *  전체 조회
+     * 전체 조회
      */
     public Page<RestaurantResponse> getAll(RestaurantSearchRequest cond, Pageable pageable) {
         boolean noFilter =
@@ -110,7 +110,7 @@ public class RestaurantService {
     }
 
     /**
-     *  상세 조회
+     * 상세 조회
      */
     public RestaurantResponse getById(Long id) {
         RestaurantEntity restaurant = restaurantRepository.findById(id)
@@ -138,7 +138,7 @@ public class RestaurantService {
     }
 
     /**
-     *  수정
+     * 수정
      */
     @Transactional
     public RestaurantResponse update(Long id, RestaurantRequest request) {
@@ -184,7 +184,7 @@ public class RestaurantService {
 
 
     /**
-     *  삭제
+     * 삭제
      */
     @Transactional
     public void delete(Long id) {
@@ -219,24 +219,27 @@ public class RestaurantService {
     }
 
     /**
-     *  지역별 조회
+     * 지역별 조회
      */
     public List<RestaurantResponse> getByArea(String area) {
         return restaurantRepository.findByArea(area).stream().map(RestaurantMapper::toResponse).collect(Collectors.toList());
     }
 
     /**
-     *  카테고리별 조회
+     * 카테고리별 조회
      */
     public Page<RestaurantResponse> getByCategory(String category, PageRequest pageRequest) {
         return restaurantRepository.findByCategoryName(category, pageRequest).map(RestaurantMapper::toResponse);
     }
 
     /**
-     *  이름 검색
+     * 이름 검색
      */
     public List<RestaurantResponse> searchByName(String keyword) {
-        return restaurantRepository.findByNameContaining(keyword).stream().map(RestaurantMapper::toResponse).collect(Collectors.toList());
+        return restaurantRepository.findByNameContaining(keyword)
+                .stream()
+                .map(RestaurantMapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     public Page<RestaurantResponse> findByOwnerId(Long ownerId, int page, int size) {
@@ -246,7 +249,7 @@ public class RestaurantService {
     }
 
     /**
-     *  인기 식당 (평점 desc, 평점 같으면 리뷰 수 많은 순)
+     * 인기 식당 (평점 desc, 평점 같으면 리뷰 수 많은 순)
      */
     public List<RestaurantResponse> getPopularRestaurants(int limit) {
         List<RestaurantEntity> all = restaurantRepository.findAll();
@@ -265,7 +268,7 @@ public class RestaurantService {
     }
 
     /**
-     *  신규 식당 (생성일자 최신 순)
+     * 신규 식당 (생성일자 최신 순)
      */
     public List<RestaurantResponse> getNewRestaurants(int limit) {
         PageRequest pageRequest = PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "createDateTime"));

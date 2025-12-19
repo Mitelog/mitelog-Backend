@@ -146,6 +146,11 @@ public class AdminController {
             restaurantPage = restaurantRepository.findAll(pageable);
         }
 
+        // ✅ Entity -> DTO로 변환 (중첩/순환/비밀번호 노출 근본 차단)
+        var dtoContent = restaurantPage.getContent().stream()
+                .map(kr.co.ync.projectA.admin.dto.response.AdminRestaurantRowResponse::from)
+                .toList();
+
         return ResponseEntity.ok(ResponseDTO.builder()
                 .status(200)
                 .msg("식당 목록 조회 성공")
