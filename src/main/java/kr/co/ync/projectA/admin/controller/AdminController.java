@@ -155,7 +155,7 @@ public class AdminController {
                 .status(200)
                 .msg("식당 목록 조회 성공")
                 .data(Map.of(
-                        "content", restaurantPage.getContent(),
+                        "content", dtoContent,
                         "totalPages", restaurantPage.getTotalPages(),
                         "totalElements", restaurantPage.getTotalElements()
                 ))
